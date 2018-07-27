@@ -1,47 +1,77 @@
 {
-	"version" : "0",
-	"file" : {
-		"name" : "WEEK 30",
-		"description" : "All hour of week 30"
+	"version": "0",
+	"file": {
+		"name": "WEEK 30",
+		"description": "All hour of week 30"
 	},
-
-	"hours" : {
-		"caceres.sandrine" : {
-			"day3" : [
+	"hours": {
+		"caceres.sandrine": {
+			"day3": [
 				{
-					"reference" : "BT160",
-					"time" : "2.5"
+					"reference": "BT160",
+					"time": "2.5"
 				},
-
 				{
-					"reference" : "BT150",
-					"time" : "3.0"
+					"reference": "BT150",
+					"time": "3.0"
 				}
 			]
 		},
-
-		"caceres.enzo" : {
-			"day2" : [
+		"caceres.enzo": {
+			"day1": [
 				{
-					"reference" : "BT160",
-					"time" : "2.5"
+					"reference": "BT160",
+					"time": "2.5"
 				},
-
 				{
-					"reference" : "BT150",
-					"time" : "3.0"
+					"reference": "BT150",
+					"time": "3.0"
+				},
+				{
+					"reference": "BT130",
+					"time": "3.0"
+				},
+				{
+					"reference": "BT120",
+					"time": "3.0"
+				},
+				{
+					"reference": "BT110",
+					"time": "3.0"
+				},
+				{
+					"reference": "BT100",
+					"time": "3.0"
+				},
+				{
+					"reference": "BT150",
+					"time": "3.0"
+				},
+				{
+					"reference": "BT130",
+					"time": "3.0"
+				},
+				{
+					"reference": "BT120",
+					"time": "3.0"
+				},
+				{
+					"reference": "BT110",
+					"time": "3.0"
+				},
+				{
+					"reference": "BT100",
+					"time": "3.0"
 				}
 			],
-
-			"day1" : [
+			"day2": [
 				{
-					"reference" : "BT160",
-					"time" : "2.5"
+					"reference": "BT160",
+					"time": "2.5"
 				},
-
 				{
-					"reference" : "BT150",
-					"time" : "3.0"
+					"reference": "BT150",
+					"time": "3.0"
 				}
 			]
 		}

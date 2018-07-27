@@ -64,7 +64,7 @@ public class TestUnits {
 		
 		public static void main(String[] args) throws Exception {
 			Language.getLanguage().initialize();
-			Utils.showDialog("error.codec.quickhourfile.unresolved-name", "enzo.caceres");
+			Utils.showErrorDialog("error.codec.quickhourfile.unresolved-name", "enzo.caceres");
 		}
 		
 	}

@@ -1,10 +1,18 @@
 package caceresenzo.apps.quickhour.models;
 
+import java.util.Comparator;
 import java.util.List;
 
 import caceresenzo.apps.quickhour.manager.QuickHourManager;
 
 public class QuickHourUser {
+	
+	public static final Comparator<QuickHourUser> COMPARATOR = new Comparator<QuickHourUser>() {
+		@Override
+		public int compare(QuickHourUser quickHourUser1, QuickHourUser quickHourUser2) {
+			return quickHourUser1.getName().compareToIgnoreCase(quickHourUser2.getName());
+		}
+	};
 	
 	private String name, display;
 	private boolean disabled = false;

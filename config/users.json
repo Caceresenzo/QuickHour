@@ -1,10 +1,16 @@
 {
 	"users": {
+		"aze.zae": {
+			"display": "AZE Z."
+		},
+		"botta.alexendre": {
+			"display": "BOTTA A."
+		},
+		"botta.quentin": {
+			"display": "BOTTA Q."
+		},
 		"caceres.enzo": {
 			"display": "CACERES E."
-		},
-		"caceres.sandrine": {
-			"display": "CACERES S."
 		},
 		"caceres.francis": {
 			"display": "CACERES F."
@@ -13,17 +19,29 @@
 			"display": "CACERES N.",
 			"disabled": true
 		},
-		"botta.quentin": {
-			"display": "BOTTA Q."
+		"caceres.sandrine": {
+			"display": "CACERES S."
 		},
-		"botta.alexendre": {
-			"display": "BOTTA A."
+		"macron.emanuelle": {
+			"display": "MACON E."
+		},
+		"qsd.aze": {
+			"display": "QSD A."
+		},
+		"s.aze": {
+			"display": "S A."
+		},
+		"selles.ginette": {
+			"display": "SELLES G."
 		},
 		"trintade.jason": {
 			"display": "TRINTADE J."
 		},
-		"macron.emanuelle": {
-			"display": "MACRON E."
+		"z.azert": {
+			"display": "Z A."
+		},
+		"zae.aze": {
+			"display": "ZAE A."
 		}
 	}
 }

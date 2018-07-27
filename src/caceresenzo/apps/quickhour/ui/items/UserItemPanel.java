@@ -44,30 +44,8 @@ public class UserItemPanel extends JPanel {
 		
 		JSeparator separator = new JSeparator();
 		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(10)
-					.addComponent(nameLabel, GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE)
-					.addPreferredGap(ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
-					.addComponent(totalHourLabel)
-					.addContainerGap())
-				.addComponent(separator, GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(11)
-							.addComponent(nameLabel, GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(totalHourLabel)
-							.addGap(11)))
-					.addGap(13)
-					.addComponent(separator, GroupLayout.PREFERRED_SIZE, 2, GroupLayout.PREFERRED_SIZE))
-		);
+		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.TRAILING).addGroup(groupLayout.createSequentialGroup().addGap(10).addComponent(nameLabel, GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE).addPreferredGap(ComponentPlacement.RELATED, 27, Short.MAX_VALUE).addComponent(totalHourLabel).addContainerGap()).addComponent(separator, GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE));
+		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout.createSequentialGroup().addContainerGap().addGroup(groupLayout.createParallelGroup(Alignment.TRAILING).addGroup(groupLayout.createSequentialGroup().addGap(11).addComponent(nameLabel, GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)).addGroup(groupLayout.createSequentialGroup().addComponent(totalHourLabel).addGap(11))).addGap(13).addComponent(separator, GroupLayout.PREFERRED_SIZE, 2, GroupLayout.PREFERRED_SIZE)));
 		setLayout(groupLayout);
 		
 		addMouseListener(new MouseListener() {
@@ -95,28 +73,32 @@ public class UserItemPanel extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				Logger.info("Clicked on user: " + UserItemPanel.this.user);
 				
-				updateColorSelection();
+				updateColorSelection(UserItemPanel.this.user);
 				
 				QuickHourWindow.getQuickHourWindow().selectUser(UserItemPanel.this.user);
 			}
 		});
 	}
 	
-	public void updateColorSelection() {
-		for (UserItemPanel user : INSTANCES) {
-			if (user == this) {
+	public static void updateColorSelection(QuickHourUser selectedUser) {
+		for (UserItemPanel userPanel : INSTANCES) {
+			if (userPanel.getUser() == selectedUser) {
+				userPanel.setForeground(COLOR_SELECTED);
+				userPanel.setBackground(COLOR_SELECTED);
 				continue;
 			}
 			
-			user.setForeground(COLOR_BASE);
-			user.setBackground(COLOR_BASE);
+			userPanel.setForeground(COLOR_BASE);
+			userPanel.setBackground(COLOR_BASE);
 		}
-
-		setForeground(COLOR_SELECTED);
-		setBackground(COLOR_SELECTED);
 	}
 	
 	public QuickHourUser getUser() {
 		return user;
 	}
+	
+	public static void destroyInstances() {
+		INSTANCES.clear();
+	}
+	
 }

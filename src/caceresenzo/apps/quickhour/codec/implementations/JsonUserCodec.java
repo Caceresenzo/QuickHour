@@ -66,10 +66,10 @@ public class JsonUserCodec extends UserCodec {
 			QuickHourUser user = iterator.next();
 			
 			builder.appendln(TAB + TAB + "\"" + user.getName() + "\": {");
-			builder.appendln(TAB + TAB + TAB + "\"" + JSON_KEY_USERS_DISPLAY + ":\": \"" + user.getDisplay() + "\"" + (user.isDisabled() ? "," : ""));
+			builder.appendln(TAB + TAB + TAB + "\"" + JSON_KEY_USERS_DISPLAY + "\": \"" + user.getDisplay() + "\"" + (user.isDisabled() ? "," : ""));
 			
 			if (user.isDisabled()) {
-				builder.appendln(TAB + TAB + TAB + "\"" + JSON_KEY_USERS_DISABLED + ":\": true");
+				builder.appendln(TAB + TAB + TAB + "\"" + JSON_KEY_USERS_DISABLED + "\": true");
 			}
 			
 			builder.appendln(TAB + TAB + "}" + (iterator.hasNext() ? "," : ""));

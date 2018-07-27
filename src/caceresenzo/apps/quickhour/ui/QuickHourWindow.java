@@ -2,6 +2,10 @@ package caceresenzo.apps.quickhour.ui;
 
 import java.awt.EventQueue;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.List;
 
@@ -10,6 +14,7 @@ import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -25,10 +30,14 @@ import javax.swing.UIManager;
 import caceresenzo.apps.quickhour.codec.implementations.JsonQuickHourFileCodec;
 import caceresenzo.apps.quickhour.codec.implementations.JsonUserCodec;
 import caceresenzo.apps.quickhour.config.Language;
+import caceresenzo.apps.quickhour.handler.ClosingHandler;
+import caceresenzo.apps.quickhour.manager.QuickHourManager;
 import caceresenzo.apps.quickhour.models.QuickHourDay;
 import caceresenzo.apps.quickhour.models.QuickHourFile;
 import caceresenzo.apps.quickhour.models.QuickHourReference;
 import caceresenzo.apps.quickhour.models.QuickHourUser;
+import caceresenzo.apps.quickhour.ui.dialogs.DialogCallback;
+import caceresenzo.apps.quickhour.ui.dialogs.NewUserDialog;
 import caceresenzo.apps.quickhour.ui.items.DayItemPanel;
 import caceresenzo.apps.quickhour.ui.items.HourItemPanel;
 import caceresenzo.apps.quickhour.ui.items.UserItemPanel;
@@ -54,6 +63,8 @@ public class QuickHourWindow {
 	private JMenuBar menuBar;
 	private JMenu mnNewMenu;
 	private JProgressBar mainProgressBar;
+	
+	private QuickHourUser selectedUser;
 	
 	/**
 	 * Launch the application.
@@ -93,12 +104,13 @@ public class QuickHourWindow {
 		List<QuickHourUser> users = new JsonUserCodec().read(new File("config/users.json"));
 		QuickHourFile quickHourFile = new JsonQuickHourFileCodec().read(new File("myhour/WEEK 30.qhr"));
 		
+		updateUsers();
 		/*
 		 * Updating UI
 		 */
-		for (QuickHourUser user : users) {
-			userPanel.add(new UserItemPanel(user));
-		}
+		// for (QuickHourUser user : users) {
+		// userPanel.add(new UserItemPanel(user));
+		// }
 		
 		// for (QuickHourUser user : quickHourFile.getUsersHours()) {
 		// Logger.info("\t| user: " + user.getName());
@@ -136,6 +148,24 @@ public class QuickHourWindow {
 		splitPane.setLeftComponent(userContainerPanel);
 		
 		newUserButton = new JButton(i18n.getString("ui.window.user.button.new"));
+		newUserButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				NewUserDialog newUserDialog = new NewUserDialog(new DialogCallback() {
+					@Override
+					public void callback(JDialog dialog, boolean hasSuccess) {
+						if (hasSuccess) {
+							updateUsers();
+							
+							if (selectedUser != null) {
+								selectUser(selectedUser);
+								UserItemPanel.updateColorSelection(selectedUser);
+							}
+						}
+					}
+				});
+				newUserDialog.setVisible(true);
+			}
+		});
 		
 		userScrollPane = new JScrollPane();
 		GroupLayout gl_userContainerPanel = new GroupLayout(userContainerPanel);
@@ -166,26 +196,9 @@ public class QuickHourWindow {
 		hourContainerPanel.setLayout(gl_hourContainerPanel);
 		
 		mainProgressBar = new JProgressBar();
-		mainProgressBar.setValue(50);
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addComponent(splitPane, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 818, Short.MAX_VALUE)
-						.addComponent(mainProgressBar, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 818, Short.MAX_VALUE))
-					.addContainerGap())
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(splitPane, GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(mainProgressBar, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
-					.addGap(6))
-		);
+		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.TRAILING).addGroup(groupLayout.createSequentialGroup().addContainerGap().addGroup(groupLayout.createParallelGroup(Alignment.TRAILING).addComponent(splitPane, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 818, Short.MAX_VALUE).addComponent(mainProgressBar, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 818, Short.MAX_VALUE)).addContainerGap()));
+		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup().addContainerGap().addComponent(splitPane, GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE).addPreferredGap(ComponentPlacement.RELATED).addComponent(mainProgressBar, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE).addGap(6)));
 		frame.getContentPane().setLayout(groupLayout);
 		
 		menuBar = new JMenuBar();
@@ -199,13 +212,43 @@ public class QuickHourWindow {
 		 */
 		userScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		hourScrollPane.getVerticalScrollBar().setUnitIncrement(16);
+		
+		/*
+		 * Actions
+		 */
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent event) {
+				Logger.info("Closing main window...");
+				
+				event.getWindow().dispose();
+				
+				ClosingHandler.handleClose();
+			}
+		});
 	}
 	
 	public static QuickHourWindow getQuickHourWindow() {
 		return WINDOW;
 	}
 	
+	public void updateUsers() {
+		userPanel.removeAll();
+		
+		UserItemPanel.destroyInstances();
+		
+		for (QuickHourUser user : QuickHourManager.getQuickHourManager().sort().getUsers()) {
+			userPanel.add(new UserItemPanel(user));
+		}
+		
+		userPanel.repaint();
+		userPanel.revalidate();
+	}
+	
 	public void selectUser(QuickHourUser user) {
+		this.selectedUser = user;
+		
 		hourPanel.removeAll();
 		
 		if (user.getDays() == null || user.getDays().isEmpty()) {
@@ -224,27 +267,10 @@ public class QuickHourWindow {
 			}
 		}
 		
-		new Thread(new Runnable() {
-			
-			int i = 0;
-			@Override
-			public void run() {
-				while (true) {
-					i++;
-					
-					mainProgressBar.setValue(i);
-					
-					if (i > 99) {
-						i = 0;
-					}
-					ThreadUtils.sleep(10L);
-				}
-			}
-		}).start();
-		
 		hourPanel.repaint();
 		hourPanel.revalidate();
 	}
+	
 	public JProgressBar getMainProgressBar() {
 		return mainProgressBar;
 	}

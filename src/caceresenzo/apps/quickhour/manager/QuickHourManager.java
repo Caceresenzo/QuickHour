@@ -35,6 +35,15 @@ public class QuickHourManager {
 		return null;
 	}
 	
+	public QuickHourManager sort() {
+		users.sort(QuickHourUser.COMPARATOR);
+		return this;
+	}
+	
+	public List<QuickHourUser> getUsers() {
+		return users;
+	}
+	
 	public float countHour(QuickHourUser user) {
 		float totalHour = 0.0F;
 		

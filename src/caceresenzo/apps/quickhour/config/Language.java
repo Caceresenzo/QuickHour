@@ -30,15 +30,29 @@ public class Language {
 			o("error.title", "Erreur");
 			o("error.parse-cli", "Erreur, l'interpreteur de commande à renvoyé une erreur: %s");
 			o("error.codec.error", "Erreur, le convertisseur à rencontrer une erreur: %s\nVoir la console pour plus d'information.");
-			o("error.codec.quickhourfile.unresolved-name", "Erreur, le nom suivant est inconnu de la base de donnée: \"%s\".\nCette entré ne sera pas pris en compte; pour corriger cela, rajoutez un utilisateur du même nom et réouvrez le fichier.");
+			o("error.codec.user.failed-saving", "Erreur, la sauvegarde du fichier des employés à échoué.\nErreur: %s");
+			o("error.codec.quickhourfile.unresolved-name", "Erreur, le nom suivant est inconnu de la base de donnée: \"%s\".\nCette entré ne sera pas pris en compte; pour corriger cela, rajoutez un employé du même nom et réouvrez le fichier.");
+
+			o("dialog.confirm.warning.title", "Attention!");
+			
+			o("ui.dialog.x.button.ok", "Valider");
+			o("ui.dialog.x.button.cancel", "Annuler");
 			
 			o("ui.window.main.container.border.title", "Insertion d'heure rapide");
-			o("ui.window.user.container.border.title", "Employé");
+			o("ui.window.user.container.border.title", "Employé(s)");
 			o("ui.window.user.button.new", "Nouveau");
 			o("ui.window.hour.container.border.title", "Heure(s)");
 			o("ui.window.hour.container.info.empty-hour", "Aucune heure n'est disponible");
 			o("ui.window.hour.button.new", "Nouveau");
 			o("ui.window.hour.button.new.quick", "Système d'insertion rapide");
+
+			o("ui.dialog.new-user.label.firstname", "Prénom");
+			o("ui.dialog.new-user.label.lastname", "Nom");
+			o("ui.dialog.new-user.label.display", "Affichage");
+			o("ui.dialog.new-user.label.key", "Clé");
+			o("ui.dialog.new-user.checkbox.auto-config", "Configuration auto.");
+			o("ui.dialog.new-user.error.empty-data", "Valeur non conforme. Ajout annulé.");
+			o("ui.dialog.new-user.warning.add-confirmation", "Voulez-vous ajouter l'employé %s ?");
 			
 			o("date.day.day0", "Dimanche");
 			o("date.day.sunday", "Dimanche");

@@ -69,7 +69,7 @@ public class JsonQuickHourFileCodec extends QuickHourFileCodec {
 			QuickHourUser user = quickHourManager.getUser(userName);
 			
 			if (user == null) {
-				Utils.showDialog("error.codec.quickhourfile.unresolved-name", userName);
+				Utils.showErrorDialog("error.codec.quickhourfile.unresolved-name", userName);
 				continue;
 			}
 			usersHours.add(user);
