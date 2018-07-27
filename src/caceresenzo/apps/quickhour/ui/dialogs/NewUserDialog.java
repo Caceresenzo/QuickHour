@@ -11,7 +11,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -23,7 +22,6 @@ import javax.swing.event.DocumentListener;
 import caceresenzo.apps.quickhour.models.QuickHourUser;
 import caceresenzo.apps.quickhour.utils.Utils;
 import caceresenzo.libs.internationalization.i18n;
-import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.string.StringUtils;
 
 public class NewUserDialog extends JDialog implements ActionListener {
@@ -33,8 +31,8 @@ public class NewUserDialog extends JDialog implements ActionListener {
 	private static final String ACTION_CANCEL = "action.cancel";
 	
 	private final JPanel contentPanel = new JPanel();
-	private JTextField firstnameTextField;
 	private JTextField lastnameTextField;
+	private JTextField firstnameTextField;
 	private JTextField displayTextField;
 	private JTextField keyTextField;
 	
@@ -43,13 +41,30 @@ public class NewUserDialog extends JDialog implements ActionListener {
 	private JButton okButton;
 	private JPanel buttonPane;
 	private JButton cancelButton;
-	private JLabel lastnameLabel;
-	private JPanel autoConfigPanel;
 	private JLabel firstnameLabel;
+	private JPanel autoConfigPanel;
+	private JLabel lastnameLabel;
 	private JLabel displayLabel;
 	private JCheckBox automaticConfigCheckBox;
 	
 	private String firstname, lastname, display, key;
+	
+	private DocumentListener documentListener = new DocumentListener() {
+		@Override
+		public void insertUpdate(DocumentEvent event) {
+			updateAutoConfig();
+		}
+		
+		@Override
+		public void removeUpdate(DocumentEvent event) {
+			updateAutoConfig();
+		}
+		
+		@Override
+		public void changedUpdate(DocumentEvent event) {
+			updateAutoConfig();
+		}
+	};
 	
 	public NewUserDialog() {
 		this(null);
@@ -64,47 +79,17 @@ public class NewUserDialog extends JDialog implements ActionListener {
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		
-		firstnameLabel = new JLabel(i18n.getString("ui.dialog.new-user.label.firstname"));
-		
-		firstnameTextField = new JTextField();
-		firstnameTextField.getDocument().addDocumentListener(new DocumentListener() {
-			@Override
-			public void insertUpdate(DocumentEvent event) {
-				updateAutoConfig();
-			}
-			
-			@Override
-			public void removeUpdate(DocumentEvent event) {
-				updateAutoConfig();
-			}
-			
-			@Override
-			public void changedUpdate(DocumentEvent event) {
-				updateAutoConfig();
-			}
-		});
-		firstnameTextField.setColumns(10);
-		
 		lastnameLabel = new JLabel(i18n.getString("ui.dialog.new-user.label.lastname"));
 		
 		lastnameTextField = new JTextField();
-		lastnameTextField.getDocument().addDocumentListener(new DocumentListener() {
-			@Override
-			public void insertUpdate(DocumentEvent event) {
-				updateAutoConfig();
-			}
-			
-			@Override
-			public void removeUpdate(DocumentEvent event) {
-				updateAutoConfig();
-			}
-			
-			@Override
-			public void changedUpdate(DocumentEvent event) {
-				updateAutoConfig();
-			}
-		});
+		lastnameTextField.getDocument().addDocumentListener(documentListener);
 		lastnameTextField.setColumns(10);
+		
+		firstnameLabel = new JLabel(i18n.getString("ui.dialog.new-user.label.firstname"));
+		
+		firstnameTextField = new JTextField();
+		firstnameTextField.getDocument().addDocumentListener(documentListener);
+		firstnameTextField.setColumns(10);
 		
 		autoConfigPanel = new JPanel();
 		autoConfigPanel.setBorder(new TitledBorder(null, "Configuration", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -119,8 +104,8 @@ public class NewUserDialog extends JDialog implements ActionListener {
 		});
 		automaticConfigCheckBox.setSelected(true);
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
-		gl_contentPanel.setHorizontalGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING).addGroup(Alignment.TRAILING, gl_contentPanel.createSequentialGroup().addContainerGap().addGroup(gl_contentPanel.createParallelGroup(Alignment.TRAILING).addComponent(automaticConfigCheckBox).addComponent(autoConfigPanel, GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE).addGroup(gl_contentPanel.createSequentialGroup().addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING).addComponent(firstnameLabel).addComponent(lastnameLabel)).addGap(20).addGroup(gl_contentPanel.createParallelGroup(Alignment.TRAILING).addComponent(firstnameTextField, GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE).addComponent(lastnameTextField)))).addContainerGap()));
-		gl_contentPanel.setVerticalGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING).addGroup(gl_contentPanel.createSequentialGroup().addContainerGap().addGroup(gl_contentPanel.createParallelGroup(Alignment.BASELINE).addComponent(firstnameLabel).addComponent(firstnameTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addPreferredGap(ComponentPlacement.UNRELATED).addGroup(gl_contentPanel.createParallelGroup(Alignment.BASELINE).addComponent(lastnameTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addComponent(lastnameLabel)).addPreferredGap(ComponentPlacement.RELATED, 47, Short.MAX_VALUE).addComponent(automaticConfigCheckBox).addPreferredGap(ComponentPlacement.RELATED).addComponent(autoConfigPanel, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE).addContainerGap()));
+		gl_contentPanel.setHorizontalGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING).addGroup(Alignment.TRAILING, gl_contentPanel.createSequentialGroup().addContainerGap().addGroup(gl_contentPanel.createParallelGroup(Alignment.TRAILING).addComponent(automaticConfigCheckBox).addComponent(autoConfigPanel, GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE).addGroup(gl_contentPanel.createSequentialGroup().addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING).addComponent(lastnameLabel).addComponent(firstnameLabel)).addGap(20).addGroup(gl_contentPanel.createParallelGroup(Alignment.TRAILING).addComponent(lastnameTextField, GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE).addComponent(firstnameTextField)))).addContainerGap()));
+		gl_contentPanel.setVerticalGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING).addGroup(gl_contentPanel.createSequentialGroup().addContainerGap().addGroup(gl_contentPanel.createParallelGroup(Alignment.BASELINE).addComponent(lastnameLabel).addComponent(lastnameTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addPreferredGap(ComponentPlacement.UNRELATED).addGroup(gl_contentPanel.createParallelGroup(Alignment.BASELINE).addComponent(firstnameTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addComponent(firstnameLabel)).addPreferredGap(ComponentPlacement.RELATED, 47, Short.MAX_VALUE).addComponent(automaticConfigCheckBox).addPreferredGap(ComponentPlacement.RELATED).addComponent(autoConfigPanel, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE).addContainerGap()));
 		
 		displayLabel = new JLabel(i18n.getString("ui.dialog.new-user.label.display"));
 		displayLabel.setEnabled(false);
@@ -179,7 +164,7 @@ public class NewUserDialog extends JDialog implements ActionListener {
 						success = true;
 					}
 				}
-
+				
 				if (callback != null) {
 					callback.callback(this, success);
 				}

@@ -43,7 +43,6 @@ import caceresenzo.apps.quickhour.ui.items.HourItemPanel;
 import caceresenzo.apps.quickhour.ui.items.UserItemPanel;
 import caceresenzo.libs.internationalization.i18n;
 import caceresenzo.libs.logger.Logger;
-import caceresenzo.libs.thread.ThreadUtils;
 
 public class QuickHourWindow {
 	
@@ -91,6 +90,7 @@ public class QuickHourWindow {
 	 * 
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unused")
 	public QuickHourWindow() throws Exception {
 		WINDOW = this;
 		
