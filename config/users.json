@@ -1,0 +1,29 @@
+{
+	"users": {
+		"caceres.enzo": {
+			"display": "CACERES E."
+		},
+		"caceres.sandrine": {
+			"display": "CACERES S."
+		},
+		"caceres.francis": {
+			"display": "CACERES F."
+		},
+		"caceres.nina": {
+			"display": "CACERES N.",
+			"disabled": true
+		},
+		"botta.quentin": {
+			"display": "BOTTA Q."
+		},
+		"botta.alexendre": {
+			"display": "BOTTA A."
+		},
+		"trintade.jason": {
+			"display": "TRINTADE J."
+		},
+		"macron.emanuelle": {
+			"display": "MACRON E."
+		}
+	}
+}

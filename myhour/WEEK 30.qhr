@@ -1,0 +1,94 @@
+{
+	"version" : "0",
+	"file" : {
+		"name" : "WEEK 30",
+		"description" : "All hour of week 30"
+	},
+
+	"hours" : {
+		"caceres.enzo" : {
+			"day1" : [
+				{
+					"reference" : "BT160",
+					"time" : 2.5
+				},
+
+				{
+					"reference" : "BT150",
+					"time" : 3
+				},
+
+				{
+					"reference" : "BT130",
+					"time" : 3
+				},
+
+				{
+					"reference" : "BT120",
+					"time" : 3
+				},
+
+				{
+					"reference" : "BT110",
+					"time" : 3
+				},
+
+				{
+					"reference" : "BT100",
+					"time" : 3
+				},
+
+				{
+					"reference" : "BT150",
+					"time" : 3
+				},
+
+				{
+					"reference" : "BT130",
+					"time" : 3
+				},
+
+				{
+					"reference" : "BT120",
+					"time" : 3
+				},
+
+				{
+					"reference" : "BT110",
+					"time" : 3
+				},
+
+				{
+					"reference" : "BT100",
+					"time" : 3
+				}
+			],
+
+			"day2" : [
+				{
+					"reference" : "BT160",
+					"time" : 2.5
+				},
+
+				{
+					"reference" : "BT150",
+					"time" : 3
+				}
+			]
+		},
+
+		"caceres.sandrine" : {
+			"day3" : [
+				{
+					"reference" : "BT160",
+					"time" : 2.5
+				},
+
+				{
+					"reference" : "BT150",
+					"time" : 3
+				}
+			]
+		}
+	}
+}

@@ -1,0 +1,23 @@
+{
+	"users": {
+		"caceres.sandrine": {
+			"display:": "CACERES S."
+		},
+		"botta.quentin": {
+			"display:": "BOTTA Q."
+		},
+		"caceres.nina": {
+			"display:": "CACERES N.",
+			"disabled:": true
+		},
+		"caceres.enzo": {
+			"display:": "CACERES E."
+		},
+		"botta.alexendre": {
+			"display:": "BOTTA A."
+		},
+		"caceres.francis": {
+			"display:": "CACERES F."
+		}
+	}
+}

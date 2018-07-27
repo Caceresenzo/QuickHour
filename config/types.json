@@ -1,0 +1,16 @@
+{
+	"types": {
+		"bt": {
+			"display": "BT",
+			"format": "BT%s"
+		},
+		"pd": {
+			"display": "PD",
+			"format": "PD%s"
+		},
+		"other": {
+			"display": "AUTRE",
+			"format": "%s"
+		}
+	}
+}
