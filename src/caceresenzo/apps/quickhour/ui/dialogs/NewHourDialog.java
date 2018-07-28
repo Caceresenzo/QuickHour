@@ -10,8 +10,10 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.security.auth.callback.Callback;
 import javax.swing.ComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -35,12 +37,12 @@ import caceresenzo.apps.quickhour.models.QuickHourDay;
 import caceresenzo.apps.quickhour.models.QuickHourReference;
 import caceresenzo.apps.quickhour.models.QuickHourUser;
 import caceresenzo.apps.quickhour.models.ReferenceFormat;
-import caceresenzo.apps.quickhour.ui.QuickHourWindow;
 import caceresenzo.apps.quickhour.utils.Utils;
 import caceresenzo.libs.internationalization.i18n;
 import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.parse.ParseUtils;
 
+@SuppressWarnings("rawtypes")
 public class NewHourDialog extends JDialog implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	
@@ -51,9 +53,9 @@ public class NewHourDialog extends JDialog implements ActionListener {
 	
 	private static String lastDay = null;
 	private static ReferenceFormat lastReferenceFormat = null;
-	private String lastGoodTime = "";
 	
-	private boolean cancelled = false;
+	private DialogCallback callback;
+	private boolean autoclose, cancelled = false;
 	private NewHourDialogResult result = null;
 	
 	/*
@@ -79,8 +81,25 @@ public class NewHourDialog extends JDialog implements ActionListener {
 	private JButton nextDayButton;
 	private JLabel realTimeValueLabel;
 	
+	/*
+	 * Managers
+	 */
+	private DaySelectionComboBoxCellRenderer daySelectionComboBoxCellRenderer;
+	private DaySelectionComboBoxModel daySelectionComboBoxModel;
+	private UserSelectionComboBoxCellRenderer userSelectionComboBoxCellRenderer;
+	private UserSelectionComboBoxModel userSelectionComboBoxModel;
+	private ReferenceSelectionComboBoxCellRenderer referenceFormatComboBoxCellRenderer;
+	private ReferenceSelectionComboBoxModel referenceFormatComboBoxModel;
+	
+	public NewHourDialog(QuickHourUser selectedUser, boolean autoclose) {
+		this(selectedUser, autoclose, null);
+	}
+	
 	@SuppressWarnings("unchecked")
-	public NewHourDialog(QuickHourUser selectedUser) {
+	public NewHourDialog(QuickHourUser selectedUser, boolean autoclose, DialogCallback callback) {
+		this.autoclose = autoclose;
+		this.callback = callback;
+		
 		setModal(true);
 		setBounds(100, 100, 600, 350);
 		getContentPane().setLayout(new BorderLayout());
@@ -161,10 +180,10 @@ public class NewHourDialog extends JDialog implements ActionListener {
 		 */
 		
 		// Days
-		final DaySelectionComboBoxCellRenderer daySelectionComboBoxCellRenderer = new DaySelectionComboBoxCellRenderer();
+		daySelectionComboBoxCellRenderer = new DaySelectionComboBoxCellRenderer();
 		dayComboBox.setRenderer(daySelectionComboBoxCellRenderer);
 		
-		final DaySelectionComboBoxModel daySelectionComboBoxModel = new DaySelectionComboBoxModel();
+		daySelectionComboBoxModel = new DaySelectionComboBoxModel();
 		dayComboBox.setModel(daySelectionComboBoxModel);
 		
 		if (lastDay == null) {
@@ -182,10 +201,10 @@ public class NewHourDialog extends JDialog implements ActionListener {
 		});
 		
 		// Users
-		final UserSelectionComboBoxCellRenderer userSelectionComboBoxCellRenderer = new UserSelectionComboBoxCellRenderer();
+		userSelectionComboBoxCellRenderer = new UserSelectionComboBoxCellRenderer();
 		userComboBox.setRenderer(userSelectionComboBoxCellRenderer);
 		
-		final UserSelectionComboBoxModel userSelectionComboBoxModel = new UserSelectionComboBoxModel(QuickHourManager.getQuickHourManager().getUsers());
+		userSelectionComboBoxModel = new UserSelectionComboBoxModel(QuickHourManager.getQuickHourManager().getUsers());
 		userComboBox.setModel(userSelectionComboBoxModel);
 		
 		userComboBox.setSelectedItem(selectedUser);
@@ -203,10 +222,10 @@ public class NewHourDialog extends JDialog implements ActionListener {
 		});
 		
 		// References Formats
-		final ReferenceSelectionComboBoxCellRenderer referenceFormatComboBoxCellRenderer = new ReferenceSelectionComboBoxCellRenderer();
+		referenceFormatComboBoxCellRenderer = new ReferenceSelectionComboBoxCellRenderer();
 		referenceFormatComboBox.setRenderer(referenceFormatComboBoxCellRenderer);
 		
-		final ReferenceSelectionComboBoxModel referenceFormatComboBoxModel = new ReferenceSelectionComboBoxModel(QuickHourManager.getQuickHourManager().getReferencesFormats());
+		referenceFormatComboBoxModel = new ReferenceSelectionComboBoxModel(QuickHourManager.getQuickHourManager().getReferencesFormats());
 		referenceFormatComboBox.setModel(referenceFormatComboBoxModel);
 		
 		if (lastReferenceFormat == null) {
@@ -223,52 +242,54 @@ public class NewHourDialog extends JDialog implements ActionListener {
 			}
 		});
 		
-		/*
-		 * Data Input
+		timeTextField.addKeyListener(timeTextFieldFloatKeyAdapter);
+	}
+	
+	private KeyAdapter timeTextFieldFloatKeyAdapter = new KeyAdapter() {
+		/**
+		 * All that fucking shit just to check and block more than two coma, for a fucking float number
 		 */
-		timeTextField.addKeyListener(new KeyAdapter() {
-			/**
-			 * All that fucking shit just to check and block more than two coma, for a fucking float number
-			 */
-			@Override
-			public void keyTyped(KeyEvent event) {
-				char charactere = event.getKeyChar();
+		@Override
+		public void keyTyped(KeyEvent event) {
+			char charactere = event.getKeyChar();
+			
+			if (charactere == ',') {
+				event.setKeyChar(charactere = '.');
+			}
+			
+			boolean dotTest = false;
+			String actualString = timeTextField.getText();
+			if (actualString == null || actualString.isEmpty() || actualString.split("[\\,\\.]").length < 2) {
+				dotTest = true;
+			}
+			
+			if (!dotTest) {
+				dotTest = true;
+				int count = charactere == '.' ? 1 : 0;
 				
-				if (charactere == ',') {
-					event.setKeyChar(charactere = '.');
-				}
-				
-				boolean dotTest = false;
-				String actualString = timeTextField.getText();
-				if (actualString == null || actualString.isEmpty() || actualString.split("[\\,\\.]").length < 2) {
-					dotTest = true;
-				}
-				
-				if (!dotTest) {
-					dotTest = true;
-					int count = charactere == '.' ? 1 : 0;
-					
-					for (char localCharactere : actualString.toCharArray()) {
-						if (localCharactere == '.') {
-							if (++count > 1) {
-								dotTest = false;
-								break;
-							}
+				for (char localCharactere : actualString.toCharArray()) {
+					if (localCharactere == '.') {
+						if (++count > 1) {
+							dotTest = false;
+							break;
 						}
 					}
 				}
-				
-				if (!(((charactere >= '0') && (charactere <= '9') || charactere == '.' || (charactere == KeyEvent.VK_BACK_SPACE) || (charactere == KeyEvent.VK_DELETE)) && dotTest)) {
-					getToolkit().beep();
-					event.consume();
-				}
-				
-				if (!event.isConsumed()) {
-					realTimeValueLabel.setText(i18n.getString("ui.dialog.quick-hour.label.time-real-value", ParseUtils.parseFloat(actualString + charactere, 0.0F)));
-				}
 			}
-		});
-	}
+			
+			if (!(((charactere >= '0') && (charactere <= '9') || charactere == '.' || (charactere == KeyEvent.VK_BACK_SPACE) || (charactere == KeyEvent.VK_DELETE)) && dotTest)) {
+				if (charactere != KeyEvent.VK_ENTER) {
+					getToolkit().beep();
+				}
+				
+				event.consume();
+			}
+			
+			if (!event.isConsumed()) {
+				realTimeValueLabel.setText(i18n.getString("ui.dialog.quick-hour.label.time-real-value", ParseUtils.parseFloat(actualString + charactere, 0.0F)));
+			}
+		}
+	};
 	
 	@Override
 	public void actionPerformed(ActionEvent event) {
@@ -285,25 +306,101 @@ public class NewHourDialog extends JDialog implements ActionListener {
 			}
 			
 			case ACTION_VALIDATE_HOUR: {
-				String reference = referenceTextField.getText();
-				String time = timeTextField.getText();
-				float timeFloat = ParseUtils.parseFloat(time, Float.POSITIVE_INFINITY);
+				String rawReferenceValue = referenceTextField.getText();
+				String rawTimeValue = timeTextField.getText();
+				float timeFloat = ParseUtils.parseFloat(rawTimeValue, Float.POSITIVE_INFINITY);
 				
-				if (reference == null || reference.isEmpty()) {
+				if (rawReferenceValue == null || rawReferenceValue.isEmpty()) {
 					Utils.showErrorDialog("ui.dialog.quick-hour.error.field-reference-empty");
 					return;
 				}
-				
-				if (time == null || time.isEmpty()) {
+				if (rawTimeValue == null || rawTimeValue.isEmpty()) {
 					Utils.showErrorDialog(timeFloat == Float.POSITIVE_INFINITY ? "ui.dialog.quick-hour.error.field-time-invalid-number" : "ui.dialog.quick-hour.error.field-time-empty");
 					return;
 				}
+				
+				// Seems to be good at this point
+				String dayRawValue = (String) daySelectionComboBoxModel.getSelectedItem();
+				QuickHourUser user = (QuickHourUser) userSelectionComboBoxModel.getSelectedItem();
+				ReferenceFormat referenceFormat = (ReferenceFormat) referenceFormatComboBoxModel.getSelectedItem();
+				
+				String formattedReference = String.format(referenceFormat.getFormat(), rawReferenceValue);
+				
+				// Resolving day
+				List<QuickHourDay> days = user.getDays();
+				if (days == null) {
+					user.applyDays(days = new ArrayList<>());
+				}
+				
+				QuickHourDay day = null;
+				for (QuickHourDay localDay : days) {
+					if (localDay.getDayName().equalsIgnoreCase(dayRawValue)) {
+						day = localDay;
+						break;
+					}
+				}
+				
+				if (day == null) {
+					days.add(day = new QuickHourDay(dayRawValue));
+				}
+				
+				// Resolving references
+				List<QuickHourReference> references = day.getReferences();
+				
+				if (references == null) {
+					day.applyReferences(references = new ArrayList<QuickHourReference>());
+				}
+				
+				QuickHourReference reference = null;
+				for (QuickHourReference localReference : references) {
+					if (localReference.getReference().equalsIgnoreCase(formattedReference)) {
+						reference = localReference;
+						break;
+					}
+				}
+				
+				if (reference == null) {
+					references.add(reference = new QuickHourReference(formattedReference).updateHourCount(timeFloat));
+				} else {
+					reference.addToCount(timeFloat);
+				}
+				
+				Logger.info("New hour added to user \"%s\", day %s, reference \"%s\", new value: %s", user.getName(), day.getDayName(), reference.getReference(), reference.getHourCount());
+				
+				result = new NewHourDialogResult(user, day, reference);
+				if (callback != null) {
+					callback.callback(this, true);
+				}
+				
+				if (autoclose) {
+					Logger.info("Auto-closing NewHourDialog modal.");
+					setVisible(false);
+					return;
+				}
+				
+				// Clearing old value
+				referenceTextField.setText("");
+				
+				timeTextField.removeKeyListener(timeTextFieldFloatKeyAdapter);
+				timeTextField.setText("");
+				timeTextField.addKeyListener(timeTextFieldFloatKeyAdapter);
+				
+				referenceTextField.grabFocus();
 				
 				break;
 			}
 			
 			case ACTION_NEXT_DAY: {
+				int actualDayIndex = Config.getIndexByDay((String) daySelectionComboBoxModel.getSelectedItem());
 				
+				if (++actualDayIndex > 6) {
+					actualDayIndex = 0;
+				}
+				
+				daySelectionComboBoxModel.setSelectedItem(Config.getDayByIndex(actualDayIndex));
+				dayComboBox.repaint();
+				
+				actionPerformed(new ActionEvent(this, 0, ACTION_NEXT_INPUT));
 				break;
 			}
 			
@@ -328,9 +425,28 @@ public class NewHourDialog extends JDialog implements ActionListener {
 	}
 	
 	public static class NewHourDialogResult {
-		private QuickHourUser targetUser;
-		private QuickHourDay quickHourDay;
-		private QuickHourReference newReference;
+		private final QuickHourUser targetUser;
+		private final QuickHourDay quickHourDay;
+		private final QuickHourReference newReference;
+		
+		public NewHourDialogResult(QuickHourUser targetUser, QuickHourDay quickHourDay, QuickHourReference newReference) {
+			this.targetUser = targetUser;
+			this.quickHourDay = quickHourDay;
+			this.newReference = newReference;
+		}
+		
+		public QuickHourUser getTargetUser() {
+			return targetUser;
+		}
+		
+		public QuickHourDay getQuickHourDay() {
+			return quickHourDay;
+		}
+		
+		public QuickHourReference getNewReference() {
+			return newReference;
+		}
+		
 	}
 	
 	private class DaySelectionComboBoxCellRenderer extends BasicComboBoxRenderer {

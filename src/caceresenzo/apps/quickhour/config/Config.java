@@ -14,6 +14,8 @@ public class Config {
 	public static final String USERS_PATH = "config/users.json";
 	public static final String REFERENCES_FORMATS_PATH = "config/references-formats.json";
 	
+	public static final float TARGET_HOUR_COUNT = 38.0F;
+	
 	public static void prepareConfig() {
 		for (int i = 0; i < 7; i++) {
 			POSSIBLE_DAYS.put("day" + i, i18n.getString("date.day.day" + i));
@@ -33,6 +35,22 @@ public class Config {
 		}
 		
 		return null;
+	}
+	
+	public static int getIndexByDay(String day) {
+		if (day == null) {
+			return 0;
+		}
+		
+		int actualIndex = 0;
+		for (Object key : POSSIBLE_DAYS.keySet()) {
+			if (String.valueOf(key).equalsIgnoreCase(day)) {
+				return actualIndex;
+			}
+			actualIndex++;
+		}
+		
+		return 0;
 	}
 	
 }

@@ -17,11 +17,15 @@ public class QuickHourDay {
 	private String dayName;
 	private List<QuickHourReference> references;
 	
+	public QuickHourDay(String dayName) {
+		this(dayName, null);
+	}
+	
 	public QuickHourDay(String dayName, List<QuickHourReference> references) {
 		this.dayName = dayName;
 		this.references = references;
 	}
-	
+
 	public String getDayName() {
 		return dayName;
 	}

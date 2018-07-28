@@ -13,10 +13,12 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
+import caceresenzo.apps.quickhour.config.Config;
 import caceresenzo.apps.quickhour.manager.QuickHourManager;
 import caceresenzo.apps.quickhour.models.QuickHourUser;
 import caceresenzo.apps.quickhour.ui.QuickHourWindow;
 import caceresenzo.libs.logger.Logger;
+import java.awt.Font;
 
 public class UserItemPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -25,6 +27,8 @@ public class UserItemPanel extends JPanel {
 	private static final Color COLOR_SELECTED = new Color(209, 240, 240);
 	
 	public static final List<UserItemPanel> INSTANCES = new ArrayList<UserItemPanel>();
+	
+	private float hourCount = 0.0F;
 	
 	private QuickHourUser user;
 	private JLabel totalHourLabel;
@@ -39,8 +43,11 @@ public class UserItemPanel extends JPanel {
 		setMaximumSize(getSize());
 		
 		nameLabel = new JLabel(user.getDisplay());
+		nameLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		
-		totalHourLabel = new JLabel(String.valueOf(QuickHourManager.getQuickHourManager().countHour(user)));
+		totalHourLabel = new JLabel(String.valueOf(hourCount = QuickHourManager.getQuickHourManager().countHour(user)));
+		totalHourLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
+		totalHourLabel.setForeground(hourCount == Config.TARGET_HOUR_COUNT ? Color.GREEN : Color.RED);
 		
 		JSeparator separator = new JSeparator();
 		GroupLayout groupLayout = new GroupLayout(this);

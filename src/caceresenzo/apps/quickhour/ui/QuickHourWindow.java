@@ -44,6 +44,9 @@ import caceresenzo.apps.quickhour.ui.items.UserItemPanel;
 import caceresenzo.apps.quickhour.utils.Utils;
 import caceresenzo.libs.internationalization.i18n;
 import caceresenzo.libs.logger.Logger;
+import javax.swing.KeyStroke;
+import java.awt.event.KeyEvent;
+import java.awt.event.InputEvent;
 
 public class QuickHourWindow implements ActionListener {
 	
@@ -78,6 +81,9 @@ public class QuickHourWindow implements ActionListener {
 	private JMenuItem fileOpenMenuItem;
 	private JMenuItem fileNewMenuItem;
 	private JMenuItem fileSaveAsMenuItem;
+	private JMenuItem fileCloseMenuItem;
+	private JMenu quickHourMenu;
+	private JMenuItem quickHourQuitApplicationItemMenu;
 	
 	public static void start() {
 		EventQueue.invokeLater(new Runnable() {
@@ -99,6 +105,9 @@ public class QuickHourWindow implements ActionListener {
 		});
 	}
 	
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	private void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 854, 480);
@@ -159,32 +168,49 @@ public class QuickHourWindow implements ActionListener {
 		menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 		
+		quickHourMenu = new JMenu("QuickHour");
+		menuBar.add(quickHourMenu);
+		
+		quickHourQuitApplicationItemMenu = new JMenuItem("Quit application");
+		quickHourQuitApplicationItemMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_MASK));
+		quickHourQuitApplicationItemMenu.setIcon(new ImageIcon(QuickHourWindow.class.getResource("/caceresenzo/assets/icons/shutdown-48.png")));
+		quickHourMenu.add(quickHourQuitApplicationItemMenu);
+		
 		fileMenu = new JMenu(i18n.getString("menu.file.title"));
 		menuBar.add(fileMenu);
 		
 		fileNewMenuItem = new JMenuItem(i18n.getString("menu.file.item.new"));
+		fileNewMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK));
 		fileNewMenuItem.setIcon(new ImageIcon(QuickHourWindow.class.getResource("/caceresenzo/assets/icons/add-new-48.png")));
 		fileNewMenuItem.setActionCommand(ACTION_MENU_FILE_NEW);
 		fileNewMenuItem.addActionListener(this);
 		fileMenu.add(fileNewMenuItem);
 		
 		fileOpenMenuItem = new JMenuItem(i18n.getString("menu.file.item.open"));
+		fileOpenMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
 		fileOpenMenuItem.setIcon(new ImageIcon(QuickHourWindow.class.getResource("/caceresenzo/assets/icons/open-48.png")));
 		fileOpenMenuItem.setActionCommand(ACTION_MENU_FILE_OPEN);
 		fileOpenMenuItem.addActionListener(this);
 		fileMenu.add(fileOpenMenuItem);
 		
 		fileSaveMenuItem = new JMenuItem(i18n.getString("menu.file.item.save"));
+		fileSaveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
 		fileSaveMenuItem.setIcon(new ImageIcon(QuickHourWindow.class.getResource("/caceresenzo/assets/icons/save-48.png")));
 		fileSaveMenuItem.setActionCommand(ACTION_MENU_FILE_SAVE);
 		fileSaveMenuItem.addActionListener(this);
 		fileMenu.add(fileSaveMenuItem);
 		
 		fileSaveAsMenuItem = new JMenuItem(i18n.getString("menu.file.item.save-as"));
+		fileSaveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_MASK | InputEvent.SHIFT_MASK));
 		fileSaveAsMenuItem.setIcon(new ImageIcon(QuickHourWindow.class.getResource("/caceresenzo/assets/icons/save-as-48.png")));
 		fileSaveAsMenuItem.setActionCommand(ACTION_MENU_FILE_SAVEAS);
 		fileSaveAsMenuItem.addActionListener(this);
 		fileMenu.add(fileSaveAsMenuItem);
+		
+		fileCloseMenuItem = new JMenuItem("Close file");
+		fileCloseMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK));
+		fileCloseMenuItem.setIcon(new ImageIcon(QuickHourWindow.class.getResource("/caceresenzo/assets/icons/multiply-48.png")));
+		fileMenu.add(fileCloseMenuItem);
 		
 		/*
 		 * Scrollbars
@@ -260,6 +286,8 @@ public class QuickHourWindow implements ActionListener {
 			userPanel.add(new UserItemPanel(user));
 		}
 		
+		UserItemPanel.updateColorSelection(selectedUser);
+		
 		userPanel.repaint();
 		userPanel.revalidate();
 	}
@@ -295,17 +323,28 @@ public class QuickHourWindow implements ActionListener {
 			return;
 		}
 		
-		while (true) {
-			NewHourDialog newHourDialog = new NewHourDialog(selectedUser);
-			newHourDialog.setVisible(true); // Locking operation
-			
-			if (!newHourDialog.hasBeenCancelled()) {
-				NewHourDialogResult result = newHourDialog.getResult();
+		NewHourDialog newHourDialog = new NewHourDialog(selectedUser, !loop, new DialogCallback() {
+			@Override
+			public void callback(JDialog dialog, boolean hasSuccess) {
+				if (!hasSuccess) {
+					return;
+				}
+				
+				handleNewHourDialogResult(((NewHourDialog) dialog).getResult());
 			}
-			
-			if (!loop || newHourDialog.hasBeenCancelled()) {
-				break;
-			}
+		});
+		newHourDialog.setVisible(true); // Locking operation
+		
+		if (!newHourDialog.hasBeenCancelled()) {
+			handleNewHourDialogResult(newHourDialog.getResult());
+		}
+	}
+	
+	private void handleNewHourDialogResult(NewHourDialogResult result) {
+		if (result != null) {
+			Logger.info("updating: " + result.getTargetUser());
+			selectUser(result.getTargetUser());
+			updateUsers();
 		}
 	}
 	
