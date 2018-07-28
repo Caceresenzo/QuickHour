@@ -1,5 +1,7 @@
 package caceresenzo.apps.quickhour.utils;
 
+import java.awt.Toolkit;
+
 import javax.swing.JOptionPane;
 
 import caceresenzo.libs.internationalization.i18n;
@@ -11,6 +13,7 @@ public class Utils {
 	}
 	
 	public static void showDialog(int type, String i18nTitle, String i18nKey, Object... data) {
+		Toolkit.getDefaultToolkit().beep();
 		JOptionPane.showMessageDialog(null, data == null || data.length == 0 ? i18n.getString(i18nKey) : i18n.getString(i18nKey, data), i18n.getString(i18nTitle), type);
 	}
 	

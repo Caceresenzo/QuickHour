@@ -1,8 +1,5 @@
 {
 	"users": {
-		"aze.zae": {
-			"display": "AZE Z."
-		},
 		"botta.alexendre": {
 			"display": "BOTTA A."
 		},
@@ -25,23 +22,11 @@
 		"macron.emanuelle": {
 			"display": "MACON E."
 		},
-		"qsd.aze": {
-			"display": "QSD A."
-		},
-		"s.aze": {
-			"display": "S A."
-		},
 		"selles.ginette": {
 			"display": "SELLES G."
 		},
 		"trintade.jason": {
 			"display": "TRINTADE J."
-		},
-		"z.azert": {
-			"display": "Z A."
-		},
-		"zae.aze": {
-			"display": "ZAE A."
 		}
 	}
 }

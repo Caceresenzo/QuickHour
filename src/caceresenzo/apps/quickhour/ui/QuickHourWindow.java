@@ -29,6 +29,7 @@ import javax.swing.UIManager;
 
 import caceresenzo.apps.quickhour.codec.implementations.JsonQuickHourFileCodec;
 import caceresenzo.apps.quickhour.codec.implementations.JsonUserCodec;
+import caceresenzo.apps.quickhour.config.Config;
 import caceresenzo.apps.quickhour.config.Language;
 import caceresenzo.apps.quickhour.handler.ClosingHandler;
 import caceresenzo.apps.quickhour.manager.QuickHourManager;
@@ -37,14 +38,21 @@ import caceresenzo.apps.quickhour.models.QuickHourFile;
 import caceresenzo.apps.quickhour.models.QuickHourReference;
 import caceresenzo.apps.quickhour.models.QuickHourUser;
 import caceresenzo.apps.quickhour.ui.dialogs.DialogCallback;
+import caceresenzo.apps.quickhour.ui.dialogs.NewHourDialog;
+import caceresenzo.apps.quickhour.ui.dialogs.NewHourDialog.NewHourDialogResult;
 import caceresenzo.apps.quickhour.ui.dialogs.NewUserDialog;
 import caceresenzo.apps.quickhour.ui.items.DayItemPanel;
 import caceresenzo.apps.quickhour.ui.items.HourItemPanel;
 import caceresenzo.apps.quickhour.ui.items.UserItemPanel;
+import caceresenzo.apps.quickhour.utils.Utils;
 import caceresenzo.libs.internationalization.i18n;
 import caceresenzo.libs.logger.Logger;
 import javax.swing.JMenuItem;
 import javax.swing.ImageIcon;
+import javax.swing.border.TitledBorder;
+import javax.swing.border.EtchedBorder;
+import java.awt.Color;
+import javax.swing.border.MatteBorder;
 
 public class QuickHourWindow {
 	
@@ -75,6 +83,8 @@ public class QuickHourWindow {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		Logger.setStaticLength(20);
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -101,6 +111,10 @@ public class QuickHourWindow {
 		WINDOW = this;
 		
 		Language.getLanguage().initialize();
+		Config.prepareConfig();
+		Logger.info(Config.POSSIBLE_DAYS);
+		
+		QuickHourManager.getQuickHourManager().initialize();
 		
 		initialize();
 		
@@ -150,7 +164,7 @@ public class QuickHourWindow {
 		splitPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		
 		userContainerPanel = new JPanel();
-		userContainerPanel.setBorder(BorderFactory.createTitledBorder(i18n.getString("ui.window.user.container.border.title")));
+		userContainerPanel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), i18n.getString("ui.window.user.container.border.title"), TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		splitPane.setLeftComponent(userContainerPanel);
 		
 		newUserButton = new JButton(i18n.getString("ui.window.user.button.new"));
@@ -184,14 +198,24 @@ public class QuickHourWindow {
 		userContainerPanel.setLayout(gl_userContainerPanel);
 		
 		hourContainerPanel = new JPanel();
-		hourContainerPanel.setBorder(BorderFactory.createTitledBorder(i18n.getString("ui.window.hour.container.border.title")));
+		hourContainerPanel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), i18n.getString("ui.window.hour.container.border.title"), TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		splitPane.setRightComponent(hourContainerPanel);
 		
 		hourScrollPane = new JScrollPane();
 		
 		newHourButton = new JButton(i18n.getString("ui.window.hour.button.new"));
+		newHourButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				lunchHourAdder(false);
+			}
+		});
 		
 		quickHourButton = new JButton(i18n.getString("ui.window.hour.button.new.quick"));
+		quickHourButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				lunchHourAdder(true);
+			}
+		});
 		GroupLayout gl_hourContainerPanel = new GroupLayout(hourContainerPanel);
 		gl_hourContainerPanel.setHorizontalGroup(gl_hourContainerPanel.createParallelGroup(Alignment.LEADING).addGroup(gl_hourContainerPanel.createSequentialGroup().addContainerGap().addGroup(gl_hourContainerPanel.createParallelGroup(Alignment.LEADING).addComponent(hourScrollPane, GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE).addGroup(gl_hourContainerPanel.createSequentialGroup().addComponent(newHourButton).addPreferredGap(ComponentPlacement.RELATED).addComponent(quickHourButton))).addContainerGap()));
 		gl_hourContainerPanel.setVerticalGroup(gl_hourContainerPanel.createParallelGroup(Alignment.TRAILING).addGroup(gl_hourContainerPanel.createSequentialGroup().addContainerGap().addComponent(hourScrollPane, GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE).addPreferredGap(ComponentPlacement.UNRELATED).addGroup(gl_hourContainerPanel.createParallelGroup(Alignment.BASELINE).addComponent(newHourButton).addComponent(quickHourButton)).addGap(6)));
@@ -277,13 +301,13 @@ public class QuickHourWindow {
 			hourPanel.add(new JLabel(i18n.getString("ui.window.hour.container.info.empty-hour")));
 		} else {
 			for (QuickHourDay day : user.getDays()) {
-				Logger.info("\t| \t| day: " + day.getDayName());
+				Logger.info("\t| DAY: " + day.getI18nDayName());
 				
 				DayItemPanel dayItemPanel = new DayItemPanel(day);
 				hourPanel.add(dayItemPanel);
 				
 				for (QuickHourReference reference : day.getReferences()) {
-					Logger.info("\t| \t| \t| ref: " + reference.getReference() + " [time: " + reference.getHourCount() + "]");
+					Logger.info("\t| \t| REF: " + reference.getReference() + " [TIME= " + reference.getHourCount() + "]");
 					dayItemPanel.getItemPanel().add(new HourItemPanel(reference));
 				}
 			}
@@ -291,6 +315,26 @@ public class QuickHourWindow {
 		
 		hourPanel.repaint();
 		hourPanel.revalidate();
+	}
+	
+	public void lunchHourAdder(boolean loop) {
+		if (selectedUser == null) {
+			Utils.showErrorDialog("ui.dialog.quick-hour.error.no-user");
+			return;
+		}
+		
+		while (true) {
+			NewHourDialog newHourDialog = new NewHourDialog(selectedUser);
+			newHourDialog.setVisible(true); // Locking operation
+			
+			if (!newHourDialog.hasBeenCancelled()) {
+				NewHourDialogResult result = newHourDialog.getResult();
+			}
+			
+			if (!loop || newHourDialog.hasBeenCancelled()) {
+				break;
+			}
+		}
 	}
 	
 	public JProgressBar getMainProgressBar() {

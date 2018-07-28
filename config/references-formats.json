@@ -1,5 +1,5 @@
 {
-	"types": {
+	"formats": {
 		"bt": {
 			"display": "BT",
 			"format": "BT%s"

@@ -34,6 +34,8 @@ public class Language {
 			o("error.codec.quickhourfile.unresolved-name", "Erreur, le nom suivant est inconnu de la base de donnée: \"%s\".\nCette entré ne sera pas pris en compte; pour corriger cela, rajoutez un employé du même nom et réouvrez le fichier.");
 
 			o("dialog.confirm.warning.title", "Attention!");
+			
+			o("manager.quickhour.references-formats.default.display", "<DEFAUT>");
 
 			o("menu.file.title", "Fichier");
 			o("menu.file.item.new", "Nouveau");
@@ -43,6 +45,7 @@ public class Language {
 			
 			o("ui.dialog.x.button.ok", "Valider");
 			o("ui.dialog.x.button.cancel", "Annuler");
+			o("ui.dialog.x.button.next-entry", "Entré suivante");
 			
 			o("ui.window.main.container.border.title", "Insertion d'heure rapide");
 			o("ui.window.user.container.border.title", "Employé(s)");
@@ -59,6 +62,20 @@ public class Language {
 			o("ui.dialog.new-user.checkbox.auto-config", "Configuration auto.");
 			o("ui.dialog.new-user.error.empty-data", "Valeur non conforme. Ajout annulé.");
 			o("ui.dialog.new-user.warning.add-confirmation", "Voulez-vous ajouter l'employé %s ?");
+
+			o("ui.dialog.quick-hour.container.constants", "Constantes");
+			o("ui.dialog.quick-hour.label.selection-user", "Employé");
+			o("ui.dialog.quick-hour.label.selection-reference-format", "Format de référence");
+			o("ui.dialog.quick-hour.label.selection-day", "Jour");
+			o("ui.dialog.quick-hour.container.hour-entry", "Ajout d'une heure");
+			o("ui.dialog.quick-hour.label.reference", "Référence");
+			o("ui.dialog.quick-hour.label.time", "Temps");
+			o("ui.dialog.quick-hour.label.time-real-value", "Valeur réel: %s");
+			o("ui.dialog.quick-hour.button.validate-hour", "Valider");
+			o("ui.dialog.quick-hour.button.next-day", "Jour suivant");
+			o("ui.dialog.quick-hour.error.field-reference-empty", "Erreur, la référence est vide.");
+			o("ui.dialog.quick-hour.error.field-time-empty", "Erreur, le temps est vide.");
+			o("ui.dialog.quick-hour.error.field-time-invalid-number", "Erreur, le temps n'est pas un chiffre.");
 			
 			o("date.day.day0", "Dimanche");
 			o("date.day.sunday", "Dimanche");
