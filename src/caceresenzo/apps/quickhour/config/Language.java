@@ -32,11 +32,12 @@ public class Language {
 			o("error.codec.error", "Erreur, le convertisseur à rencontrer une erreur: %s\nVoir la console pour plus d'information.");
 			o("error.codec.user.failed-saving", "Erreur, la sauvegarde du fichier des employés à échoué.\nErreur: %s");
 			o("error.codec.quickhourfile.unresolved-name", "Erreur, le nom suivant est inconnu de la base de donnée: \"%s\".\nCette entré ne sera pas pris en compte; pour corriger cela, rajoutez un employé du même nom et réouvrez le fichier.");
-
+			o("error.featrure.not-implemented", "Erreur, fonctionnalité non implenté.\nCommande: %s");
+			
 			o("dialog.confirm.warning.title", "Attention!");
 			
 			o("manager.quickhour.references-formats.default.display", "<DEFAUT>");
-
+			
 			o("menu.file.title", "Fichier");
 			o("menu.file.item.new", "Nouveau");
 			o("menu.file.item.open", "Ouvrir...");
@@ -54,7 +55,7 @@ public class Language {
 			o("ui.window.hour.container.info.empty-hour", "Aucune heure n'est disponible");
 			o("ui.window.hour.button.new", "Nouveau");
 			o("ui.window.hour.button.new.quick", "Système d'insertion rapide");
-
+			
 			o("ui.dialog.new-user.label.firstname", "Prénom");
 			o("ui.dialog.new-user.label.lastname", "Nom");
 			o("ui.dialog.new-user.label.display", "Affichage");
@@ -62,7 +63,7 @@ public class Language {
 			o("ui.dialog.new-user.checkbox.auto-config", "Configuration auto.");
 			o("ui.dialog.new-user.error.empty-data", "Valeur non conforme. Ajout annulé.");
 			o("ui.dialog.new-user.warning.add-confirmation", "Voulez-vous ajouter l'employé %s ?");
-
+			
 			o("ui.dialog.quick-hour.container.constants", "Constantes");
 			o("ui.dialog.quick-hour.label.selection-user", "Employé");
 			o("ui.dialog.quick-hour.label.selection-reference-format", "Format de référence");
@@ -73,6 +74,7 @@ public class Language {
 			o("ui.dialog.quick-hour.label.time-real-value", "Valeur réel: %s");
 			o("ui.dialog.quick-hour.button.validate-hour", "Valider");
 			o("ui.dialog.quick-hour.button.next-day", "Jour suivant");
+			o("ui.dialog.quick-hour.error.no-user", "Erreur, aucun employé n'est sélectionné.");
 			o("ui.dialog.quick-hour.error.field-reference-empty", "Erreur, la référence est vide.");
 			o("ui.dialog.quick-hour.error.field-time-empty", "Erreur, le temps est vide.");
 			o("ui.dialog.quick-hour.error.field-time-invalid-number", "Erreur, le temps n'est pas un chiffre.");

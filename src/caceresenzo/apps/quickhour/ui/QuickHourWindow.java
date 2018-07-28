@@ -6,19 +6,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -26,15 +26,12 @@ import javax.swing.JSplitPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 
-import caceresenzo.apps.quickhour.codec.implementations.JsonQuickHourFileCodec;
-import caceresenzo.apps.quickhour.codec.implementations.JsonUserCodec;
-import caceresenzo.apps.quickhour.config.Config;
-import caceresenzo.apps.quickhour.config.Language;
 import caceresenzo.apps.quickhour.handler.ClosingHandler;
 import caceresenzo.apps.quickhour.manager.QuickHourManager;
 import caceresenzo.apps.quickhour.models.QuickHourDay;
-import caceresenzo.apps.quickhour.models.QuickHourFile;
 import caceresenzo.apps.quickhour.models.QuickHourReference;
 import caceresenzo.apps.quickhour.models.QuickHourUser;
 import caceresenzo.apps.quickhour.ui.dialogs.DialogCallback;
@@ -47,14 +44,17 @@ import caceresenzo.apps.quickhour.ui.items.UserItemPanel;
 import caceresenzo.apps.quickhour.utils.Utils;
 import caceresenzo.libs.internationalization.i18n;
 import caceresenzo.libs.logger.Logger;
-import javax.swing.JMenuItem;
-import javax.swing.ImageIcon;
-import javax.swing.border.TitledBorder;
-import javax.swing.border.EtchedBorder;
-import java.awt.Color;
-import javax.swing.border.MatteBorder;
 
-public class QuickHourWindow {
+public class QuickHourWindow implements ActionListener {
+	
+	private static final String ACTION_MENU_FILE_NEW = "action.menu.file.new";
+	private static final String ACTION_MENU_FILE_OPEN = "action.menu.file.open";
+	private static final String ACTION_MENU_FILE_SAVE = "action.menu.file.save";
+	private static final String ACTION_MENU_FILE_SAVEAS = "action.menu.file.saveas";
+	
+	private static final String ACTION_USER_NEW = "action.user.new";
+	private static final String ACTION_HOUR_NEW = "action.hour.new";
+	private static final String ACTION_HOUR_QUICK = "action.hour.QUICK";
 	
 	private static QuickHourWindow WINDOW;
 	
@@ -79,79 +79,26 @@ public class QuickHourWindow {
 	private JMenuItem fileNewMenuItem;
 	private JMenuItem fileSaveAsMenuItem;
 	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		Logger.setStaticLength(20);
-		
+	public static void start() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 					
-					QuickHourWindow window = new QuickHourWindow();
-					window.frame.setVisible(true);
+					WINDOW = new QuickHourWindow();
+					WINDOW.initialize();
+					WINDOW.frame.setVisible(true);
 					
-					SwingUtilities.updateComponentTreeUI(window.frame);
-				} catch (Exception e) {
-					e.printStackTrace();
+					SwingUtilities.updateComponentTreeUI(WINDOW.frame);
+					
+					WINDOW.updateUsers();
+				} catch (Exception exception) {
+					exception.printStackTrace();
 				}
 			}
 		});
 	}
 	
-	/**
-	 * Create the application.
-	 * 
-	 * @throws Exception
-	 */
-	@SuppressWarnings("unused")
-	public QuickHourWindow() throws Exception {
-		WINDOW = this;
-		
-		Language.getLanguage().initialize();
-		Config.prepareConfig();
-		Logger.info(Config.POSSIBLE_DAYS);
-		
-		QuickHourManager.getQuickHourManager().initialize();
-		
-		initialize();
-		
-		/*
-		 * Loading data
-		 */
-		List<QuickHourUser> users = new JsonUserCodec().read(new File("config/users.json"));
-		QuickHourFile quickHourFile = new JsonQuickHourFileCodec().read(new File("myhour/WEEK 30.qhr"));
-		
-		updateUsers();
-		/*
-		 * Updating UI
-		 */
-		// for (QuickHourUser user : users) {
-		// userPanel.add(new UserItemPanel(user));
-		// }
-		
-		// for (QuickHourUser user : quickHourFile.getUsersHours()) {
-		// Logger.info("\t| user: " + user.getName());
-		//
-		// for (QuickHourDay day : user.getDays()) {
-		// Logger.info("\t| \t| day: " + day.getDayName());
-		//
-		// DayItemPanel dayItemPanel = new DayItemPanel(day);
-		// hourPanel.add(dayItemPanel);
-		//
-		// for (QuickHourReference reference : day.getReferences()) {
-		// Logger.info("\t| \t| \t| ref: " + reference.getReference() + " [time: " + reference.getHourCount() + "]");
-		// dayItemPanel.getItemPanel().add(new HourItemPanel(reference));
-		// }
-		// }
-		// }
-	}
-	
-	/**
-	 * Initialize the contents of the frame.
-	 */
 	private void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 854, 480);
@@ -168,24 +115,8 @@ public class QuickHourWindow {
 		splitPane.setLeftComponent(userContainerPanel);
 		
 		newUserButton = new JButton(i18n.getString("ui.window.user.button.new"));
-		newUserButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				NewUserDialog newUserDialog = new NewUserDialog(new DialogCallback() {
-					@Override
-					public void callback(JDialog dialog, boolean hasSuccess) {
-						if (hasSuccess) {
-							updateUsers();
-							
-							if (selectedUser != null) {
-								selectUser(selectedUser);
-								UserItemPanel.updateColorSelection(selectedUser);
-							}
-						}
-					}
-				});
-				newUserDialog.setVisible(true);
-			}
-		});
+		newUserButton.setActionCommand(ACTION_USER_NEW);
+		newUserButton.addActionListener(this);
 		
 		userScrollPane = new JScrollPane();
 		GroupLayout gl_userContainerPanel = new GroupLayout(userContainerPanel);
@@ -204,18 +135,12 @@ public class QuickHourWindow {
 		hourScrollPane = new JScrollPane();
 		
 		newHourButton = new JButton(i18n.getString("ui.window.hour.button.new"));
-		newHourButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				lunchHourAdder(false);
-			}
-		});
+		newHourButton.setActionCommand(ACTION_HOUR_NEW);
+		newHourButton.addActionListener(this);
 		
 		quickHourButton = new JButton(i18n.getString("ui.window.hour.button.new.quick"));
-		quickHourButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				lunchHourAdder(true);
-			}
-		});
+		quickHourButton.setActionCommand(ACTION_HOUR_QUICK);
+		quickHourButton.addActionListener(this);
 		GroupLayout gl_hourContainerPanel = new GroupLayout(hourContainerPanel);
 		gl_hourContainerPanel.setHorizontalGroup(gl_hourContainerPanel.createParallelGroup(Alignment.LEADING).addGroup(gl_hourContainerPanel.createSequentialGroup().addContainerGap().addGroup(gl_hourContainerPanel.createParallelGroup(Alignment.LEADING).addComponent(hourScrollPane, GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE).addGroup(gl_hourContainerPanel.createSequentialGroup().addComponent(newHourButton).addPreferredGap(ComponentPlacement.RELATED).addComponent(quickHourButton))).addContainerGap()));
 		gl_hourContainerPanel.setVerticalGroup(gl_hourContainerPanel.createParallelGroup(Alignment.TRAILING).addGroup(gl_hourContainerPanel.createSequentialGroup().addContainerGap().addComponent(hourScrollPane, GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE).addPreferredGap(ComponentPlacement.UNRELATED).addGroup(gl_hourContainerPanel.createParallelGroup(Alignment.BASELINE).addComponent(newHourButton).addComponent(quickHourButton)).addGap(6)));
@@ -239,18 +164,26 @@ public class QuickHourWindow {
 		
 		fileNewMenuItem = new JMenuItem(i18n.getString("menu.file.item.new"));
 		fileNewMenuItem.setIcon(new ImageIcon(QuickHourWindow.class.getResource("/caceresenzo/assets/icons/add-new-48.png")));
+		fileNewMenuItem.setActionCommand(ACTION_MENU_FILE_NEW);
+		fileNewMenuItem.addActionListener(this);
 		fileMenu.add(fileNewMenuItem);
 		
 		fileOpenMenuItem = new JMenuItem(i18n.getString("menu.file.item.open"));
 		fileOpenMenuItem.setIcon(new ImageIcon(QuickHourWindow.class.getResource("/caceresenzo/assets/icons/open-48.png")));
+		fileOpenMenuItem.setActionCommand(ACTION_MENU_FILE_OPEN);
+		fileOpenMenuItem.addActionListener(this);
 		fileMenu.add(fileOpenMenuItem);
 		
 		fileSaveMenuItem = new JMenuItem(i18n.getString("menu.file.item.save"));
 		fileSaveMenuItem.setIcon(new ImageIcon(QuickHourWindow.class.getResource("/caceresenzo/assets/icons/save-48.png")));
+		fileSaveMenuItem.setActionCommand(ACTION_MENU_FILE_SAVE);
+		fileSaveMenuItem.addActionListener(this);
 		fileMenu.add(fileSaveMenuItem);
 		
 		fileSaveAsMenuItem = new JMenuItem(i18n.getString("menu.file.item.save-as"));
 		fileSaveAsMenuItem.setIcon(new ImageIcon(QuickHourWindow.class.getResource("/caceresenzo/assets/icons/save-as-48.png")));
+		fileSaveAsMenuItem.setActionCommand(ACTION_MENU_FILE_SAVEAS);
+		fileSaveAsMenuItem.addActionListener(this);
 		fileMenu.add(fileSaveAsMenuItem);
 		
 		/*
@@ -273,6 +206,45 @@ public class QuickHourWindow {
 				ClosingHandler.handleClose();
 			}
 		});
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		switch (event.getActionCommand()) {
+			case ACTION_USER_NEW: {
+				NewUserDialog newUserDialog = new NewUserDialog(new DialogCallback() {
+					@Override
+					public void callback(JDialog dialog, boolean hasSuccess) {
+						if (hasSuccess) {
+							updateUsers();
+							
+							if (selectedUser != null) {
+								selectUser(selectedUser);
+								UserItemPanel.updateColorSelection(selectedUser);
+							}
+						}
+					}
+				});
+				
+				newUserDialog.setVisible(true);
+				break;
+			}
+			
+			case ACTION_HOUR_NEW: {
+				lunchHourAdder(false);
+				break;
+			}
+			
+			case ACTION_HOUR_QUICK: {
+				lunchHourAdder(true);
+				break;
+			}
+			
+			default: {
+				Utils.showErrorDialog("error.featrure.not-implemented", event.getActionCommand());
+				break;
+			}
+		}
 	}
 	
 	public static QuickHourWindow getQuickHourWindow() {
@@ -337,7 +309,4 @@ public class QuickHourWindow {
 		}
 	}
 	
-	public JProgressBar getMainProgressBar() {
-		return mainProgressBar;
-	}
 }

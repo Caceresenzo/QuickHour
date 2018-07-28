@@ -11,6 +11,7 @@ import caceresenzo.apps.quickhour.models.QuickHourReference;
 import caceresenzo.apps.quickhour.models.QuickHourUser;
 import caceresenzo.apps.quickhour.models.ReferenceFormat;
 import caceresenzo.libs.internationalization.i18n;
+import caceresenzo.libs.logger.Logger;
 
 public class QuickHourManager {
 	
@@ -34,6 +35,7 @@ public class QuickHourManager {
 	}
 	
 	public void addUser(QuickHourUser user) {
+		Logger.info("New used loaded: " + user.getName());
 		users.add(user);
 	}
 	
