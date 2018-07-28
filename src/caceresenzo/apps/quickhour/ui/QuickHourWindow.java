@@ -43,6 +43,8 @@ import caceresenzo.apps.quickhour.ui.items.HourItemPanel;
 import caceresenzo.apps.quickhour.ui.items.UserItemPanel;
 import caceresenzo.libs.internationalization.i18n;
 import caceresenzo.libs.logger.Logger;
+import javax.swing.JMenuItem;
+import javax.swing.ImageIcon;
 
 public class QuickHourWindow {
 	
@@ -60,10 +62,14 @@ public class QuickHourWindow {
 	private JPanel userPanel;
 	private JPanel hourPanel;
 	private JMenuBar menuBar;
-	private JMenu mnNewMenu;
+	private JMenu fileMenu;
 	private JProgressBar mainProgressBar;
 	
 	private QuickHourUser selectedUser;
+	private JMenuItem fileSaveMenuItem;
+	private JMenuItem fileOpenMenuItem;
+	private JMenuItem fileNewMenuItem;
+	private JMenuItem fileSaveAsMenuItem;
 	
 	/**
 	 * Launch the application.
@@ -204,8 +210,24 @@ public class QuickHourWindow {
 		menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 		
-		mnNewMenu = new JMenu("New menu");
-		menuBar.add(mnNewMenu);
+		fileMenu = new JMenu(i18n.getString("menu.file.title"));
+		menuBar.add(fileMenu);
+		
+		fileNewMenuItem = new JMenuItem(i18n.getString("menu.file.item.new"));
+		fileNewMenuItem.setIcon(new ImageIcon(QuickHourWindow.class.getResource("/caceresenzo/assets/icons/add-new-48.png")));
+		fileMenu.add(fileNewMenuItem);
+		
+		fileOpenMenuItem = new JMenuItem(i18n.getString("menu.file.item.open"));
+		fileOpenMenuItem.setIcon(new ImageIcon(QuickHourWindow.class.getResource("/caceresenzo/assets/icons/open-48.png")));
+		fileMenu.add(fileOpenMenuItem);
+		
+		fileSaveMenuItem = new JMenuItem(i18n.getString("menu.file.item.save"));
+		fileSaveMenuItem.setIcon(new ImageIcon(QuickHourWindow.class.getResource("/caceresenzo/assets/icons/save-48.png")));
+		fileMenu.add(fileSaveMenuItem);
+		
+		fileSaveAsMenuItem = new JMenuItem(i18n.getString("menu.file.item.save-as"));
+		fileSaveAsMenuItem.setIcon(new ImageIcon(QuickHourWindow.class.getResource("/caceresenzo/assets/icons/save-as-48.png")));
+		fileMenu.add(fileSaveAsMenuItem);
 		
 		/*
 		 * Scrollbars

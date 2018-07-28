@@ -36,7 +36,7 @@ public class TestUnits {
 			new JsonUserCodec().read(new File("config/users.json"));
 			
 			QuickHourFile quickHourFile = new JsonQuickHourFileCodec().read(new File("myhour/WEEK 30.qhr"));
-
+			
 			Logger.info("File Version: " + quickHourFile.getFileVersion().get());
 			Logger.info("File Name: " + quickHourFile.getFileName());
 			Logger.info("File Name: " + quickHourFile.getFileDescription());
@@ -47,13 +47,12 @@ public class TestUnits {
 				
 				for (QuickHourDay day : user.getDays()) {
 					Logger.info("\t| \t| day: " + day.getDayName());
-
+					
 					for (QuickHourReference reference : day.getReferences()) {
 						Logger.info("\t| \t| \t| ref: " + reference.getReference() + " [time: " + reference.getHourCount() + "]");
 					}
 				}
 			}
-			
 			
 			new JsonQuickHourFileCodec().write(new File("test/myhour/WEEK 30.qhr"), quickHourFile);
 		}

@@ -34,6 +34,12 @@ public class Language {
 			o("error.codec.quickhourfile.unresolved-name", "Erreur, le nom suivant est inconnu de la base de donnée: \"%s\".\nCette entré ne sera pas pris en compte; pour corriger cela, rajoutez un employé du même nom et réouvrez le fichier.");
 
 			o("dialog.confirm.warning.title", "Attention!");
+
+			o("menu.file.title", "Fichier");
+			o("menu.file.item.new", "Nouveau");
+			o("menu.file.item.open", "Ouvrir...");
+			o("menu.file.item.save", "Enregistrer");
+			o("menu.file.item.save-as", "Enregistrer sous...");
 			
 			o("ui.dialog.x.button.ok", "Valider");
 			o("ui.dialog.x.button.cancel", "Annuler");
