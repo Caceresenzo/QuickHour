@@ -49,7 +49,7 @@ public class NewHourDialog extends JDialog implements ActionListener {
 	private static final String ACTION_NEXT_DAY = "action.next_day";
 	private static final String ACTION_NEXT_INPUT = "action.next_input";
 	private static final String ACTION_VALIDATE_HOUR = "action.validate_hour";
-	private static final String ACTION_CANCEL = "action.cancel";
+	private static final String ACTION_CLOSE = "action.close";
 	
 	private static String lastDay = null;
 	private static ReferenceFormat lastReferenceFormat = null;
@@ -73,7 +73,7 @@ public class NewHourDialog extends JDialog implements ActionListener {
 	private JLabel timeLabel;
 	private JLabel referenceSelectionLabel;
 	private JLabel daySelectionLabel;
-	private JButton cancelButton;
+	private JButton closeButton;
 	private JLabel referenceLabel;
 	private JComboBox<String> dayComboBox;
 	private JPanel hourEntryPanel;
@@ -168,10 +168,10 @@ public class NewHourDialog extends JDialog implements ActionListener {
 				getRootPane().setDefaultButton(nextEntryButton);
 			}
 			{
-				cancelButton = new JButton(i18n.getString("ui.dialog.x.button.cancel"));
-				cancelButton.setActionCommand(ACTION_CANCEL);
-				cancelButton.addActionListener(this);
-				buttonPane.add(cancelButton);
+				closeButton = new JButton(i18n.getString("ui.dialog.x.button.close"));
+				closeButton.setActionCommand(ACTION_CLOSE);
+				closeButton.addActionListener(this);
+				buttonPane.add(closeButton);
 			}
 		}
 		
@@ -404,7 +404,7 @@ public class NewHourDialog extends JDialog implements ActionListener {
 				break;
 			}
 			
-			case ACTION_CANCEL: {
+			case ACTION_CLOSE: {
 				cancelled = true;
 				setVisible(false);
 				break;

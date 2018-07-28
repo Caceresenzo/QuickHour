@@ -49,11 +49,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.InputEvent;
 
 public class QuickHourWindow implements ActionListener {
-	
+
+	private static final String ACTION_MENU_QUICKHOUR_QUIT = "action.menu.quickhour.quit";
 	private static final String ACTION_MENU_FILE_NEW = "action.menu.file.new";
 	private static final String ACTION_MENU_FILE_OPEN = "action.menu.file.open";
 	private static final String ACTION_MENU_FILE_SAVE = "action.menu.file.save";
 	private static final String ACTION_MENU_FILE_SAVEAS = "action.menu.file.saveas";
+	private static final String ACTION_MENU_FILE_CLOSE = "action.menu.file.close";
 	
 	private static final String ACTION_USER_NEW = "action.user.new";
 	private static final String ACTION_HOUR_NEW = "action.hour.new";
@@ -168,12 +170,14 @@ public class QuickHourWindow implements ActionListener {
 		menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 		
-		quickHourMenu = new JMenu("QuickHour");
+		quickHourMenu = new JMenu(i18n.getString("menu.quickhour.title"));
 		menuBar.add(quickHourMenu);
 		
-		quickHourQuitApplicationItemMenu = new JMenuItem("Quit application");
+		quickHourQuitApplicationItemMenu = new JMenuItem(i18n.getString("menu.quickhour.item.quit"));
 		quickHourQuitApplicationItemMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_MASK));
 		quickHourQuitApplicationItemMenu.setIcon(new ImageIcon(QuickHourWindow.class.getResource("/caceresenzo/assets/icons/shutdown-48.png")));
+		quickHourQuitApplicationItemMenu.setActionCommand(ACTION_MENU_QUICKHOUR_QUIT);
+		quickHourQuitApplicationItemMenu.addActionListener(this);
 		quickHourMenu.add(quickHourQuitApplicationItemMenu);
 		
 		fileMenu = new JMenu(i18n.getString("menu.file.title"));
@@ -207,9 +211,11 @@ public class QuickHourWindow implements ActionListener {
 		fileSaveAsMenuItem.addActionListener(this);
 		fileMenu.add(fileSaveAsMenuItem);
 		
-		fileCloseMenuItem = new JMenuItem("Close file");
+		fileCloseMenuItem = new JMenuItem(i18n.getString("menu.file.item.close"));
 		fileCloseMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK));
 		fileCloseMenuItem.setIcon(new ImageIcon(QuickHourWindow.class.getResource("/caceresenzo/assets/icons/multiply-48.png")));
+		fileCloseMenuItem.setActionCommand(ACTION_MENU_FILE_CLOSE);
+		fileCloseMenuItem.addActionListener(this);
 		fileMenu.add(fileCloseMenuItem);
 		
 		/*

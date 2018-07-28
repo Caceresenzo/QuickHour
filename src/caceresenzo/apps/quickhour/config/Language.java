@@ -38,14 +38,19 @@ public class Language {
 			
 			o("manager.quickhour.references-formats.default.display", "<DEFAUT>");
 			
+			o("menu.quickhour.title", "QuickHour");
+			o("menu.quickhour.item.quit", "Quitter l'application");
+			
 			o("menu.file.title", "Fichier");
 			o("menu.file.item.new", "Nouveau");
 			o("menu.file.item.open", "Ouvrir...");
 			o("menu.file.item.save", "Enregistrer");
 			o("menu.file.item.save-as", "Enregistrer sous...");
+			o("menu.file.item.close", "Fermer");
 			
 			o("ui.dialog.x.button.ok", "Valider");
 			o("ui.dialog.x.button.cancel", "Annuler");
+			o("ui.dialog.x.button.close", "Fermer");
 			o("ui.dialog.x.button.next-entry", "Entré suivante");
 			
 			o("ui.window.main.container.border.title", "Insertion d'heure rapide");
