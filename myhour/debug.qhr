@@ -1,0 +1,93 @@
+{
+	"version": "0",
+	"file": {
+		"name": "debug.qhr",
+		"description": ""
+	},
+	"hours": {
+		"botta.quentin": {
+			"day3": [
+				{
+					"reference": "BT14745",
+					"time": "4.0"
+				},
+				{
+					"reference": "BT785",
+					"time": "475.0"
+				},
+				{
+					"reference": "BT75",
+					"time": "41.0"
+				}
+			],
+			"day4": [
+				{
+					"reference": "BT45",
+					"time": "74.0"
+				},
+				{
+					"reference": "BT85",
+					"time": "74.0"
+				},
+				{
+					"reference": "BT7",
+					"time": "16.0"
+				},
+				{
+					"reference": "BT2",
+					"time": "77.0"
+				},
+				{
+					"reference": "BT17",
+					"time": "57.0"
+				},
+				{
+					"reference": "BT175",
+					"time": "4.0"
+				}
+			],
+			"day1": [
+				{
+					"reference": "PD152",
+					"time": "45.0"
+				}
+			]
+		},
+		"botta.alexendre": {
+			"day1": [
+				{
+					"reference": "BT150",
+					"time": "2.5"
+				},
+				{
+					"reference": "BT23",
+					"time": "5.5"
+				}
+			],
+			"day2": [
+				{
+					"reference": "BT56",
+					"time": "48.0"
+				},
+				{
+					"reference": "BT74",
+					"time": "85.0"
+				},
+				{
+					"reference": "BT63",
+					"time": "10.0"
+				}
+			],
+			"day3": [
+				{
+					"reference": "BT47",
+					"time": "85.0"
+				},
+				{
+					"reference": "BT42",
+					"time": "25.0"
+				}
+			]
+		}
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"version": "0",
+	"file": {
+		"name": "WEEK 33.qhr",
+		"description": ""
+	},
+	"hours": {
+		"caceres.nina": {
+			"day1": [
+				{
+					"reference": "BTaze",
+					"time": "123.0"
+				}
+			]
+		}
+	}
+}

@@ -4,5 +4,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="assets"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Java.Library.Common"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/Apache Common CLI"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/Apache POI (read Microsoft Documents)"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

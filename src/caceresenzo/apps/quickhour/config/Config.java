@@ -1,11 +1,15 @@
 package caceresenzo.apps.quickhour.config;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import caceresenzo.libs.internationalization.i18n;
 
 public class Config {
+	
+	public static final String APPLICATION_NAME = "QuickHour";
 	
 	public static final String STARTING_DAY = "day1";
 	public static final Map<String, String> POSSIBLE_DAYS = new LinkedHashMap<String, String>();
@@ -15,8 +19,10 @@ public class Config {
 	public static final String REFERENCES_FORMATS_PATH = "config/references-formats.json";
 	
 	public static final float TARGET_HOUR_COUNT = 38.0F;
-	public static String LAST_FOLDER_OPEN = ".";
+	public static String LAST_FOLDER_OPEN = "./myhour/";
+	public static String LAST_FOLDER_EXPORT_OPEN = "./export/";
 	public static final String FILE_EXTENSION = "qhr";
+	public static final String EXCEL_FILE_EXTENSION = "xlsx";
 	
 	public static void prepareConfig() {
 		for (int i = 0; i < 7; i++) {
@@ -53,6 +59,20 @@ public class Config {
 		}
 		
 		return 0;
+	}
+	
+	public static List<String> getDaysOfTheWeek(boolean sundayAtTheEnd) {
+		List<String> days = new ArrayList<>();
+		
+		for (int i = sundayAtTheEnd ? 1 : 0; i <= 6; i++) {
+			days.add("day" + i);
+		}
+		
+		if (sundayAtTheEnd) {
+			days.add("day0");
+		}
+		
+		return days;
 	}
 	
 }

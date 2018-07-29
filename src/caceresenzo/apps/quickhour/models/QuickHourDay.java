@@ -41,5 +41,19 @@ public class QuickHourDay {
 	public void applyReferences(List<QuickHourReference> references) {
 		this.references = references;
 	}
+
+	public float countHour() {
+		float totalHour = 0.0F;
+		
+		if (references == null) {
+			return 0.0F;
+		}
+		
+		for (QuickHourReference reference : references) {
+			totalHour += reference.getHourCount();
+		}
+		
+		return totalHour;
+	}
 	
 }

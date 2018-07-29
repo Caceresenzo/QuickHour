@@ -1,11 +1,21 @@
 package caceresenzo.apps.quickhour.handler;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import caceresenzo.apps.quickhour.codec.implementations.ExcelExportQuickHourFileCodec;
 import caceresenzo.apps.quickhour.codec.implementations.JsonQuickHourFileCodec;
+import caceresenzo.apps.quickhour.config.Config;
 import caceresenzo.apps.quickhour.manager.QuickHourManager;
 import caceresenzo.apps.quickhour.models.QuickHourFile;
-import caceresenzo.apps.quickhour.ui.QuickHourWindow;
+import caceresenzo.apps.quickhour.ui.HourEditorWindow;
 import caceresenzo.apps.quickhour.utils.Utils;
 import caceresenzo.libs.filesystem.FilenameUtils;
 import caceresenzo.libs.logger.Logger;
@@ -21,7 +31,7 @@ public class WorkHandler {
 	}
 	
 	public static void openFile() {
-		File openFile = Utils.selectFile();
+		File openFile = Utils.selectFile(Config.FILE_EXTENSION);
 		
 		if (openFile == null) {
 			Utils.showErrorDialog("dialog.file.open.error.file-is-null");
@@ -33,7 +43,7 @@ public class WorkHandler {
 			
 			actualQuickHourFile = new JsonQuickHourFileCodec().read(openFile);
 			
-			QuickHourWindow.getQuickHourWindow().notifyUiCompleteRefresh();
+			HourEditorWindow.getHourEditorWindow().notifyUiCompleteRefresh();
 			
 			actualFile = openFile;
 		} catch (Exception exception) {
@@ -46,7 +56,7 @@ public class WorkHandler {
 		while (true) {
 			try {
 				if (saveAs || actualFile == null) {
-					actualFile = Utils.selectFile();
+					actualFile = Utils.selectFile(Config.FILE_EXTENSION);
 					
 					if (actualFile == null) {
 						Utils.showInfoDialog("dialog.confirm.save.error.save-unsaved-work.cancelled");
@@ -96,6 +106,39 @@ public class WorkHandler {
 		return true;
 	}
 	
+	public static void closeWorksheet() {
+		if (WorkHandler.checkSave()) {
+			QuickHourManager.getQuickHourManager().emptyHoursOfEveryone();
+			HourEditorWindow.getHourEditorWindow().selectUser(null);
+			HourEditorWindow.getHourEditorWindow().updateUsers();
+			
+			alreadySavedFile = false;
+			actualQuickHourFile = new QuickHourFile();
+			actualFile = null;
+		}
+	}
+	public static void exportFile() {
+		exportFile(Utils.selectFile(Config.EXCEL_FILE_EXTENSION));
+	}
+	
+	public static void exportFile(File exportFile) {
+		checkSave();
+		
+		if (exportFile == null) {
+			Utils.showErrorDialog("dialog.file.export.error.file-is-null");
+			return;
+		}
+		
+		// TODO: Open dialog to allow custom entry
+		
+		try {
+			new ExcelExportQuickHourFileCodec().write(exportFile, actualQuickHourFile);
+		} catch (Exception exception) {
+			Logger.exception(exception, "Failed to export file");
+			Utils.showErrorDialog("export.error.failed", exception.getLocalizedMessage());
+		}
+	}
+	
 	public static boolean hasUnsavedWork() {
 		return unsavedWork;
 	}
@@ -124,7 +167,7 @@ public class WorkHandler {
 		if (actualQuickHourFile == null) {
 			QuickHourManager.getQuickHourManager().emptyHoursOfEveryone();
 			actualQuickHourFile = new QuickHourFile();
-			QuickHourWindow.getQuickHourWindow().notifyUiCompleteRefresh();
+			HourEditorWindow.getHourEditorWindow().notifyUiCompleteRefresh();
 		}
 		return actualQuickHourFile;
 	}

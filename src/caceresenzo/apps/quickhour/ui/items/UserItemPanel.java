@@ -16,7 +16,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import caceresenzo.apps.quickhour.config.Config;
 import caceresenzo.apps.quickhour.manager.QuickHourManager;
 import caceresenzo.apps.quickhour.models.QuickHourUser;
-import caceresenzo.apps.quickhour.ui.QuickHourWindow;
+import caceresenzo.apps.quickhour.ui.HourEditorWindow;
 import caceresenzo.libs.logger.Logger;
 import java.awt.Font;
 
@@ -82,7 +82,7 @@ public class UserItemPanel extends JPanel {
 				
 				updateColorSelection(UserItemPanel.this.user);
 				
-				QuickHourWindow.getQuickHourWindow().selectUser(UserItemPanel.this.user);
+				HourEditorWindow.getHourEditorWindow().selectUser(UserItemPanel.this.user);
 			}
 		});
 	}

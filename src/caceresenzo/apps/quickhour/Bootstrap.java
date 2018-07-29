@@ -2,13 +2,11 @@ package caceresenzo.apps.quickhour;
 
 import java.io.File;
 
-import caceresenzo.apps.quickhour.codec.implementations.JsonQuickHourFileCodec;
 import caceresenzo.apps.quickhour.codec.implementations.JsonUserCodec;
 import caceresenzo.apps.quickhour.config.Config;
 import caceresenzo.apps.quickhour.config.Language;
 import caceresenzo.apps.quickhour.manager.QuickHourManager;
-import caceresenzo.apps.quickhour.models.QuickHourFile;
-import caceresenzo.apps.quickhour.ui.QuickHourWindow;
+import caceresenzo.apps.quickhour.ui.HourEditorWindow;
 import caceresenzo.libs.logger.Logger;
 
 public class Bootstrap {
@@ -26,7 +24,7 @@ public class Bootstrap {
 		new JsonUserCodec().read(new File("config/users.json"));
 		// QuickHourFile quickHourFile = new JsonQuickHourFileCodec().read(new File("myhour/WEEK 30.qhr"));
 		
-		QuickHourWindow.start();
+		HourEditorWindow.start();
 	}
 	
 }

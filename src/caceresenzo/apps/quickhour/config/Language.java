@@ -35,7 +35,7 @@ public class Language {
 			o("error.featrure.not-implemented", "Erreur, fonctionnalité non implenté.\nCommande: %s");
 			
 			o("info.title", "Information");
-
+			
 			o("dialog.confirm.warning.title", "Attention!");
 			
 			o("dialog.confirm.save.title", "Sauvegarde");
@@ -45,8 +45,8 @@ public class Language {
 			o("dialog.confirm.save.error.save-unsaved-work.save-failed", "Erreur, la sauvegarde du fichier n'a pas réussi...\nRaison: %s");
 			o("dialog.confirm.save.error.save-unsaved-work.save-failed-retry", "Voulez vous réésayer ?");
 			o("dialog.confirm.save.error.save-unsaved-work.cancelled", "Sauvegarde annulé!");
-
-			o("dialog.file.open.error.file-is-null", "Erreur, le fichier est vide.");
+			
+			o("dialog.file.open.error.file-is-null", "Erreur, aucun fichier selectionné.");
 			o("dialog.file.open.error.load-failed", "Erreur, le fichier n'a pas pu être chargé.\nRaison: ");
 			
 			o("manager.quickhour.references-formats.default.display", "<DEFAUT>");
@@ -59,6 +59,7 @@ public class Language {
 			o("menu.file.item.open", "Ouvrir...");
 			o("menu.file.item.save", "Enregistrer");
 			o("menu.file.item.save-as", "Enregistrer sous...");
+			o("menu.file.item.export", "Exporter (Excel)...");
 			o("menu.file.item.close", "Fermer");
 			
 			o("ui.dialog.x.button.ok", "Valider");
@@ -111,6 +112,14 @@ public class Language {
 			o("date.day.friday", "Vendredi");
 			o("date.day.day6", "Samedi");
 			o("date.day.saturday", "Samedi");
+			
+			o("dialog.file.export.error.file-is-null", "Erreur, auncun fichier selectionné. Exportation annulé");
+			o("export.error.failed", "Erreur, l'exportation a rencontrer un problème.\nRaison: %s");
+			o("export.column.user", "EMPLOYé".toUpperCase());
+			o("export.column.day", "JOUR");
+			o("export.column.total", "TOTAL");
+			o("export.column.total-week", "T. SEM.");
+			o("export.column.total-reference", "T. REF.");
 		}
 		
 	}

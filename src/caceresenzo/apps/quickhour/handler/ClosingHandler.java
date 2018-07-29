@@ -6,7 +6,6 @@ import java.util.List;
 import caceresenzo.apps.quickhour.codec.implementations.JsonUserCodec;
 import caceresenzo.apps.quickhour.config.Config;
 import caceresenzo.apps.quickhour.manager.QuickHourManager;
-import caceresenzo.apps.quickhour.models.QuickHourFile;
 import caceresenzo.apps.quickhour.models.QuickHourUser;
 import caceresenzo.apps.quickhour.utils.Utils;
 import caceresenzo.libs.logger.Logger;
@@ -26,7 +25,6 @@ public class ClosingHandler {
 		}
 		
 		boolean canQuit = WorkHandler.checkSave();
-		
 		
 		if (canQuit) {
 			System.exit(0);

@@ -49,20 +49,21 @@ import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
 import java.awt.event.InputEvent;
 
-public class QuickHourWindow implements ActionListener {
+public class HourEditorWindow implements ActionListener {
 	
 	private static final String ACTION_MENU_QUICKHOUR_QUIT = "action.menu.quickhour.quit";
 	private static final String ACTION_MENU_FILE_NEW = "action.menu.file.new";
 	private static final String ACTION_MENU_FILE_OPEN = "action.menu.file.open";
 	private static final String ACTION_MENU_FILE_SAVE = "action.menu.file.save";
 	private static final String ACTION_MENU_FILE_SAVEAS = "action.menu.file.saveas";
+	private static final String ACTION_MENU_FILE_EXPORT = "action.menu.file.export";
 	private static final String ACTION_MENU_FILE_CLOSE = "action.menu.file.close";
 	
 	private static final String ACTION_USER_NEW = "action.user.new";
 	private static final String ACTION_HOUR_NEW = "action.hour.new";
 	private static final String ACTION_HOUR_QUICK = "action.hour.QUICK";
 	
-	private static QuickHourWindow WINDOW;
+	private static HourEditorWindow WINDOW;
 	
 	private JFrame frame;
 	private JSplitPane splitPane;
@@ -87,6 +88,7 @@ public class QuickHourWindow implements ActionListener {
 	private JMenuItem fileCloseMenuItem;
 	private JMenu quickHourMenu;
 	private JMenuItem quickHourQuitApplicationItemMenu;
+	private JMenuItem fileExportMenuItem;
 	
 	public static void start() {
 		EventQueue.invokeLater(new Runnable() {
@@ -94,7 +96,7 @@ public class QuickHourWindow implements ActionListener {
 				try {
 					UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 					
-					WINDOW = new QuickHourWindow();
+					WINDOW = new HourEditorWindow();
 					WINDOW.initialize();
 					WINDOW.frame.setVisible(true);
 					
@@ -171,53 +173,60 @@ public class QuickHourWindow implements ActionListener {
 		menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 		
-		quickHourMenu = new JMenu(i18n.getString("menu.quickhour.title"));
-		menuBar.add(quickHourMenu);
-		
-		quickHourQuitApplicationItemMenu = new JMenuItem(i18n.getString("menu.quickhour.item.quit"));
-		quickHourQuitApplicationItemMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_MASK));
-		quickHourQuitApplicationItemMenu.setIcon(new ImageIcon(QuickHourWindow.class.getResource("/caceresenzo/assets/icons/shutdown-48.png")));
-		quickHourQuitApplicationItemMenu.setActionCommand(ACTION_MENU_QUICKHOUR_QUIT);
-		quickHourQuitApplicationItemMenu.addActionListener(this);
-		quickHourMenu.add(quickHourQuitApplicationItemMenu);
-		
 		fileMenu = new JMenu(i18n.getString("menu.file.title"));
 		menuBar.add(fileMenu);
 		
 		fileNewMenuItem = new JMenuItem(i18n.getString("menu.file.item.new"));
 		fileNewMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK));
-		fileNewMenuItem.setIcon(new ImageIcon(QuickHourWindow.class.getResource("/caceresenzo/assets/icons/add-new-48.png")));
+		fileNewMenuItem.setIcon(new ImageIcon(HourEditorWindow.class.getResource("/caceresenzo/assets/icons/add-new-48.png")));
 		fileNewMenuItem.setActionCommand(ACTION_MENU_FILE_NEW);
 		fileNewMenuItem.addActionListener(this);
 		fileMenu.add(fileNewMenuItem);
 		
 		fileOpenMenuItem = new JMenuItem(i18n.getString("menu.file.item.open"));
 		fileOpenMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
-		fileOpenMenuItem.setIcon(new ImageIcon(QuickHourWindow.class.getResource("/caceresenzo/assets/icons/open-48.png")));
+		fileOpenMenuItem.setIcon(new ImageIcon(HourEditorWindow.class.getResource("/caceresenzo/assets/icons/open-48.png")));
 		fileOpenMenuItem.setActionCommand(ACTION_MENU_FILE_OPEN);
 		fileOpenMenuItem.addActionListener(this);
 		fileMenu.add(fileOpenMenuItem);
 		
 		fileSaveMenuItem = new JMenuItem(i18n.getString("menu.file.item.save"));
 		fileSaveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
-		fileSaveMenuItem.setIcon(new ImageIcon(QuickHourWindow.class.getResource("/caceresenzo/assets/icons/save-48.png")));
+		fileSaveMenuItem.setIcon(new ImageIcon(HourEditorWindow.class.getResource("/caceresenzo/assets/icons/save-48.png")));
 		fileSaveMenuItem.setActionCommand(ACTION_MENU_FILE_SAVE);
 		fileSaveMenuItem.addActionListener(this);
 		fileMenu.add(fileSaveMenuItem);
 		
 		fileSaveAsMenuItem = new JMenuItem(i18n.getString("menu.file.item.save-as"));
 		fileSaveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_MASK | InputEvent.SHIFT_MASK));
-		fileSaveAsMenuItem.setIcon(new ImageIcon(QuickHourWindow.class.getResource("/caceresenzo/assets/icons/save-as-48.png")));
+		fileSaveAsMenuItem.setIcon(new ImageIcon(HourEditorWindow.class.getResource("/caceresenzo/assets/icons/save-as-48.png")));
 		fileSaveAsMenuItem.setActionCommand(ACTION_MENU_FILE_SAVEAS);
 		fileSaveAsMenuItem.addActionListener(this);
 		fileMenu.add(fileSaveAsMenuItem);
 		
+		fileExportMenuItem = new JMenuItem(i18n.getString("menu.file.item.export"));
+		fileExportMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK));
+		fileExportMenuItem.setIcon(new ImageIcon(HourEditorWindow.class.getResource("/caceresenzo/assets/icons/microsoft-excel-48.png")));
+		fileExportMenuItem.setActionCommand(ACTION_MENU_FILE_EXPORT);
+		fileExportMenuItem.addActionListener(this);
+		fileMenu.add(fileExportMenuItem);
+		
 		fileCloseMenuItem = new JMenuItem(i18n.getString("menu.file.item.close"));
 		fileCloseMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK));
-		fileCloseMenuItem.setIcon(new ImageIcon(QuickHourWindow.class.getResource("/caceresenzo/assets/icons/multiply-48.png")));
+		fileCloseMenuItem.setIcon(new ImageIcon(HourEditorWindow.class.getResource("/caceresenzo/assets/icons/multiply-48.png")));
 		fileCloseMenuItem.setActionCommand(ACTION_MENU_FILE_CLOSE);
 		fileCloseMenuItem.addActionListener(this);
 		fileMenu.add(fileCloseMenuItem);
+		
+		quickHourMenu = new JMenu(i18n.getString("menu.quickhour.title"));
+		menuBar.add(quickHourMenu);
+		
+		quickHourQuitApplicationItemMenu = new JMenuItem(i18n.getString("menu.quickhour.item.quit"));
+		quickHourQuitApplicationItemMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_MASK));
+		quickHourQuitApplicationItemMenu.setIcon(new ImageIcon(HourEditorWindow.class.getResource("/caceresenzo/assets/icons/shutdown-48.png")));
+		quickHourQuitApplicationItemMenu.setActionCommand(ACTION_MENU_QUICKHOUR_QUIT);
+		quickHourQuitApplicationItemMenu.addActionListener(this);
+		quickHourMenu.add(quickHourQuitApplicationItemMenu);
 		
 		/*
 		 * Scrollbars
@@ -246,6 +255,19 @@ public class QuickHourWindow implements ActionListener {
 		String command = event.getActionCommand();
 		
 		switch (command) {
+			
+			case ACTION_MENU_FILE_NEW:
+			case ACTION_MENU_FILE_CLOSE: {
+				WorkHandler.closeWorksheet();
+				
+				if (command.equals(ACTION_MENU_FILE_NEW)) {
+					WorkHandler.getActualQuickHourFile(); // Create a new sheet
+				}
+				
+				notifyUiCompleteRefresh();
+				break;
+			}
+			
 			case ACTION_MENU_FILE_OPEN: {
 				WorkHandler.openFile();
 				break;
@@ -254,6 +276,11 @@ public class QuickHourWindow implements ActionListener {
 			case ACTION_MENU_FILE_SAVE:
 			case ACTION_MENU_FILE_SAVEAS: {
 				WorkHandler.saveFile(command.equals(ACTION_MENU_FILE_SAVEAS));
+				break;
+			}
+			
+			case ACTION_MENU_FILE_EXPORT: {
+				WorkHandler.exportFile();
 				break;
 			}
 			
@@ -276,6 +303,11 @@ public class QuickHourWindow implements ActionListener {
 				break;
 			}
 			
+			case ACTION_MENU_QUICKHOUR_QUIT: {
+				ClosingHandler.handleClose();
+				break;
+			}
+			
 			case ACTION_HOUR_NEW:
 			case ACTION_HOUR_QUICK: {
 				lunchHourAdder(command.equals(ACTION_HOUR_QUICK));
@@ -283,14 +315,14 @@ public class QuickHourWindow implements ActionListener {
 			}
 			
 			default: {
-				Utils.showErrorDialog("error.featrure.not-implemented", event.getActionCommand());
+				Utils.showErrorDialog("error.featrure.not-implemented", command);
 				break;
 			}
 		}
 		
 	}
 	
-	public static QuickHourWindow getQuickHourWindow() {
+	public static HourEditorWindow getHourEditorWindow() {
 		return WINDOW;
 	}
 	
