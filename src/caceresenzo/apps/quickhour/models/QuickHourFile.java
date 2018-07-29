@@ -1,5 +1,6 @@
 package caceresenzo.apps.quickhour.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import caceresenzo.libs.comparator.Version;
@@ -11,7 +12,7 @@ public class QuickHourFile {
 	private List<QuickHourUser> usersHours;
 	
 	public QuickHourFile() {
-		this(new Version("0"), null, null, null);
+		this(new Version("0"), "", "", new ArrayList<QuickHourUser>());
 	}
 	
 	public QuickHourFile(Version fileVersion, String fileName, String fileDescription, List<QuickHourUser> userHours) {

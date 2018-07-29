@@ -30,6 +30,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import caceresenzo.apps.quickhour.handler.ClosingHandler;
+import caceresenzo.apps.quickhour.handler.WorkHandler;
 import caceresenzo.apps.quickhour.manager.QuickHourManager;
 import caceresenzo.apps.quickhour.models.QuickHourDay;
 import caceresenzo.apps.quickhour.models.QuickHourReference;
@@ -49,7 +50,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.InputEvent;
 
 public class QuickHourWindow implements ActionListener {
-
+	
 	private static final String ACTION_MENU_QUICKHOUR_QUIT = "action.menu.quickhour.quit";
 	private static final String ACTION_MENU_FILE_NEW = "action.menu.file.new";
 	private static final String ACTION_MENU_FILE_OPEN = "action.menu.file.open";
@@ -231,9 +232,9 @@ public class QuickHourWindow implements ActionListener {
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent event) {
-				Logger.info("Closing main window...");
+				// Logger.info("Closing main window...");
 				
-				event.getWindow().dispose();
+				// event.getWindow().dispose();
 				
 				ClosingHandler.handleClose();
 			}
@@ -242,7 +243,20 @@ public class QuickHourWindow implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		switch (event.getActionCommand()) {
+		String command = event.getActionCommand();
+		
+		switch (command) {
+			case ACTION_MENU_FILE_OPEN: {
+				WorkHandler.openFile();
+				break;
+			}
+			
+			case ACTION_MENU_FILE_SAVE:
+			case ACTION_MENU_FILE_SAVEAS: {
+				WorkHandler.saveFile(command.equals(ACTION_MENU_FILE_SAVEAS));
+				break;
+			}
+			
 			case ACTION_USER_NEW: {
 				NewUserDialog newUserDialog = new NewUserDialog(new DialogCallback() {
 					@Override
@@ -262,13 +276,9 @@ public class QuickHourWindow implements ActionListener {
 				break;
 			}
 			
-			case ACTION_HOUR_NEW: {
-				lunchHourAdder(false);
-				break;
-			}
-			
+			case ACTION_HOUR_NEW:
 			case ACTION_HOUR_QUICK: {
-				lunchHourAdder(true);
+				lunchHourAdder(command.equals(ACTION_HOUR_QUICK));
 				break;
 			}
 			
@@ -277,6 +287,7 @@ public class QuickHourWindow implements ActionListener {
 				break;
 			}
 		}
+		
 	}
 	
 	public static QuickHourWindow getQuickHourWindow() {
@@ -303,7 +314,9 @@ public class QuickHourWindow implements ActionListener {
 		
 		hourPanel.removeAll();
 		
-		if (user.getDays() == null || user.getDays().isEmpty()) {
+		if (user == null) {
+			hourPanel.add(new JLabel(""));
+		} else if (user.getDays() == null || user.getDays().isEmpty()) {
 			hourPanel.add(new JLabel(i18n.getString("ui.window.hour.container.info.empty-hour")));
 		} else {
 			for (QuickHourDay day : user.getDays()) {
@@ -352,6 +365,11 @@ public class QuickHourWindow implements ActionListener {
 			selectUser(result.getTargetUser());
 			updateUsers();
 		}
+	}
+	
+	public void notifyUiCompleteRefresh() {
+		selectUser(null);
+		updateUsers();
 	}
 	
 }

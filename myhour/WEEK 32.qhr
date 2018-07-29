@@ -1,0 +1,25 @@
+{
+	"version": "0",
+	"file": {
+		"name": "WEEK 32.qhr",
+		"description": ""
+	},
+	"hours": {
+		"botta.quentin": {
+			"day1": [
+				{
+					"reference": "BT23",
+					"time": "230.0"
+				},
+				{
+					"reference": "BT5",
+					"time": "12.0"
+				},
+				{
+					"reference": "BT445",
+					"time": "56.0"
+				}
+			]
+		}
+	}
+}

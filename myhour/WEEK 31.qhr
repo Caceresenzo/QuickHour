@@ -1,0 +1,17 @@
+{
+	"version": "0",
+	"file": {
+		"name": "NEW FILE",
+		"description": ""
+	},
+	"hours": {
+		"caceres.francis": {
+			"day1": [
+				{
+					"reference": "BT56",
+					"time": "69.0"
+				}
+			]
+		}
+	}
+}

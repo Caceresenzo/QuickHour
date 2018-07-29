@@ -30,11 +30,24 @@ public class Language {
 			o("error.title", "Erreur");
 			o("error.parse-cli", "Erreur, l'interpreteur de commande à renvoyé une erreur: %s");
 			o("error.codec.error", "Erreur, le convertisseur à rencontrer une erreur: %s\nVoir la console pour plus d'information.");
-			o("error.codec.user.failed-saving", "Erreur, la sauvegarde du fichier des employés à échoué.\nErreur: %s");
+			o("error.codec.user.failed-saving", "Erreur, la sauvegarde du fichier des employés à échoué.\nRaison: %s");
 			o("error.codec.quickhourfile.unresolved-name", "Erreur, le nom suivant est inconnu de la base de donnée: \"%s\".\nCette entré ne sera pas pris en compte; pour corriger cela, rajoutez un employé du même nom et réouvrez le fichier.");
 			o("error.featrure.not-implemented", "Erreur, fonctionnalité non implenté.\nCommande: %s");
 			
+			o("info.title", "Information");
+
 			o("dialog.confirm.warning.title", "Attention!");
+			
+			o("dialog.confirm.save.title", "Sauvegarde");
+			o("dialog.confirm.save.button.yes", "Oui");
+			o("dialog.confirm.save.button.no", "Non");
+			o("dialog.confirm.save.context.save-unsaved-work", "Sauvegarder le travail \"%s\" ?");
+			o("dialog.confirm.save.error.save-unsaved-work.save-failed", "Erreur, la sauvegarde du fichier n'a pas réussi...\nRaison: %s");
+			o("dialog.confirm.save.error.save-unsaved-work.save-failed-retry", "Voulez vous réésayer ?");
+			o("dialog.confirm.save.error.save-unsaved-work.cancelled", "Sauvegarde annulé!");
+
+			o("dialog.file.open.error.file-is-null", "Erreur, le fichier est vide.");
+			o("dialog.file.open.error.load-failed", "Erreur, le fichier n'a pas pu être chargé.\nRaison: ");
 			
 			o("manager.quickhour.references-formats.default.display", "<DEFAUT>");
 			

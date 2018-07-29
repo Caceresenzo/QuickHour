@@ -32,8 +32,10 @@ import javax.swing.event.ListDataListener;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import caceresenzo.apps.quickhour.config.Config;
+import caceresenzo.apps.quickhour.handler.WorkHandler;
 import caceresenzo.apps.quickhour.manager.QuickHourManager;
 import caceresenzo.apps.quickhour.models.QuickHourDay;
+import caceresenzo.apps.quickhour.models.QuickHourFile;
 import caceresenzo.apps.quickhour.models.QuickHourReference;
 import caceresenzo.apps.quickhour.models.QuickHourUser;
 import caceresenzo.apps.quickhour.models.ReferenceFormat;
@@ -326,6 +328,17 @@ public class NewHourDialog extends JDialog implements ActionListener {
 				
 				String formattedReference = String.format(referenceFormat.getFormat(), rawReferenceValue);
 				
+				// Resolving file
+				QuickHourFile quickHourFile = WorkHandler.getActualQuickHourFile();
+				List<QuickHourUser> usersHours = quickHourFile.getUsersHours();
+				if (usersHours == null) {
+					usersHours = new ArrayList<QuickHourUser>();
+				}
+				
+				if (!usersHours.contains(user)) {
+					usersHours.add(user);
+				}
+				
 				// Resolving day
 				List<QuickHourDay> days = user.getDays();
 				if (days == null) {
@@ -371,6 +384,8 @@ public class NewHourDialog extends JDialog implements ActionListener {
 				if (callback != null) {
 					callback.callback(this, true);
 				}
+				
+				WorkHandler.hasUnsavedWork(true);
 				
 				if (autoclose) {
 					Logger.info("Auto-closing NewHourDialog modal.");

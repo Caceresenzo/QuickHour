@@ -24,7 +24,7 @@ public class Bootstrap {
 		 * Loading data
 		 */
 		new JsonUserCodec().read(new File("config/users.json"));
-		QuickHourFile quickHourFile = new JsonQuickHourFileCodec().read(new File("myhour/WEEK 30.qhr"));
+		// QuickHourFile quickHourFile = new JsonQuickHourFileCodec().read(new File("myhour/WEEK 30.qhr"));
 		
 		QuickHourWindow.start();
 	}

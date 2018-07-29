@@ -65,6 +65,12 @@ public class QuickHourManager {
 		return totalHour;
 	}
 	
+	public void emptyHoursOfEveryone() {
+		for (QuickHourUser user : users) {
+			user.applyDays(new ArrayList<QuickHourDay>());
+		}
+	}
+	
 	public QuickHourManager sort() {
 		users.sort(QuickHourUser.COMPARATOR);
 		return this;

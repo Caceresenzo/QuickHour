@@ -15,6 +15,8 @@ public class Config {
 	public static final String REFERENCES_FORMATS_PATH = "config/references-formats.json";
 	
 	public static final float TARGET_HOUR_COUNT = 38.0F;
+	public static String LAST_FOLDER_OPEN = ".";
+	public static final String FILE_EXTENSION = "qhr";
 	
 	public static void prepareConfig() {
 		for (int i = 0; i < 7; i++) {
