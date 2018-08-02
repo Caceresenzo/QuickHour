@@ -14,6 +14,7 @@ import caceresenzo.apps.quickhour.models.QuickHourFile;
 import caceresenzo.apps.quickhour.models.QuickHourReference;
 import caceresenzo.apps.quickhour.models.QuickHourUser;
 import caceresenzo.apps.quickhour.utils.Utils;
+import caceresenzo.libs.codec.chartable.JsonCharTable;
 import caceresenzo.libs.comparator.Version;
 import caceresenzo.libs.filesystem.FileChecker;
 import caceresenzo.libs.filesystem.FileUtils;
@@ -23,7 +24,7 @@ import caceresenzo.libs.parse.ParseUtils;
 import caceresenzo.libs.string.SimpleLineStringBuilder;
 import caceresenzo.libs.string.StringUtils;
 
-public class JsonQuickHourFileCodec extends QuickHourFileCodec {
+public class JsonQuickHourFileCodec extends QuickHourFileCodec implements JsonCharTable {
 	
 	private static final String JSON_KEY_VERSION = "version";
 	private static final String JSON_KEY_FILE = "file";

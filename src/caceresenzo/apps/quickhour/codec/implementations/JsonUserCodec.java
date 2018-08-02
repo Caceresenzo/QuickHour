@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 
 import caceresenzo.apps.quickhour.codec.UserCodec;
 import caceresenzo.apps.quickhour.models.QuickHourUser;
+import caceresenzo.libs.codec.chartable.JsonCharTable;
 import caceresenzo.libs.filesystem.FileChecker;
 import caceresenzo.libs.filesystem.FileUtils;
 import caceresenzo.libs.json.JsonObject;
@@ -17,7 +18,7 @@ import caceresenzo.libs.parse.ParseUtils;
 import caceresenzo.libs.string.SimpleLineStringBuilder;
 import caceresenzo.libs.string.StringUtils;
 
-public class JsonUserCodec extends UserCodec {
+public class JsonUserCodec extends UserCodec implements JsonCharTable {
 	
 	private static final String JSON_KEY_USERS = "users";
 	private static final String JSON_KEY_USERS_DISPLAY = "display";

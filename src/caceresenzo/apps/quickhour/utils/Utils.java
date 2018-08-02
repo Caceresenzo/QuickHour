@@ -2,16 +2,27 @@ package caceresenzo.apps.quickhour.utils;
 
 import java.awt.Toolkit;
 import java.io.File;
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import caceresenzo.apps.quickhour.config.Config;
+import caceresenzo.libs.codec.chartable.SeparatorCharTable;
 import caceresenzo.libs.filesystem.FileUtils;
 import caceresenzo.libs.internationalization.i18n;
 
-public class Utils {
+public class Utils implements SeparatorCharTable {
 	
 	public static void showErrorDialog(String i18nKey, Object... data) {
 		showDialog(JOptionPane.ERROR_MESSAGE, "error.title", i18nKey, data);
@@ -62,6 +73,51 @@ public class Utils {
 			// return new File("New QuickHour File.qhr");
 			return null;
 		}
+	}
+	
+	public static List<String> readExcel(File file) throws Exception {
+		FileInputStream excelFile = new FileInputStream(file);
+		Workbook workbook = new XSSFWorkbook(excelFile);
+		Sheet datatypeSheet = workbook.getSheetAt(0);
+		Iterator<Row> iterator = datatypeSheet.iterator();
+		
+		List<String> data = new ArrayList<String>();
+		
+		while (iterator.hasNext()) {
+			Row currentRow = iterator.next();
+			
+			Iterator<Cell> cellIterator = currentRow.iterator();
+			
+			String cellLine = "";
+			while (cellIterator.hasNext()) {
+				Cell currentCell = cellIterator.next();
+				
+				String cellData = DATA_FILL;
+				
+				switch (currentCell.getCellTypeEnum()) { // getCellTypeEnum shown as deprecated for version 3.15, ill be renamed to getCellType starting from version 4.0
+					case STRING: {
+						cellData = currentCell.getStringCellValue();
+						break;
+					}
+					case NUMERIC: {
+						cellData = String.valueOf((int) currentCell.getNumericCellValue());
+						break;
+					}
+					
+					default:
+						break;
+				}
+				
+				if (cellData != null) {
+					cellLine += cellData + (cellIterator.hasNext() ? DATA_SEPARATOR : "");
+				}
+			}
+			data.add(cellLine);
+		}
+		
+		workbook.close();
+		
+		return data;
 	}
 	
 }

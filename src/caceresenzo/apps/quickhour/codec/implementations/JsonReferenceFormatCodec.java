@@ -15,7 +15,7 @@ import caceresenzo.libs.parse.ParseUtils;
 import caceresenzo.libs.string.StringUtils;
 
 public class JsonReferenceFormatCodec extends ReferenceFormatCodec {
-
+	
 	private static final String JSON_KEY_FORMATS = "formats";
 	private static final String JSON_KEY_FORMATS_DISPLAY = "display";
 	private static final String JSON_KEY_FORMATS_FORMAT = "format";

@@ -23,6 +23,7 @@ import caceresenzo.apps.quickhour.models.QuickHourFile;
 import caceresenzo.apps.quickhour.models.QuickHourReference;
 import caceresenzo.apps.quickhour.models.QuickHourUser;
 import caceresenzo.apps.quickhour.utils.Utils;
+import caceresenzo.libs.codec.chartable.SeparatorCharTable;
 import caceresenzo.libs.logger.Logger;
 
 public class TestUnits {
@@ -105,17 +106,16 @@ public class TestUnits {
 		
 	}
 	
-	public static class OrganizationReadingTest {
-		
-		private static final String DATA_SEPARATOR = ",";
-		private static final String DATA_FILL = "-";
+	public static class OrganizationReadingTest implements SeparatorCharTable {
 		
 		public static void main(String[] args) throws Exception {
-			for (String string : getData(new File("./config/organization.xlsx"))) {
-				for (String splitedString : string.split(",")) {
-					
-					System.out.println(splitedString);
-				}
+			for (String string : Utils.readExcel(new File("./config/organization.xlsx"))) {
+				System.out.println(string);
+				// for (String string : getData(new File("./config/organization.xlsx"))) {
+				// for (String splitedString : string.split(",")) {
+				//
+				// System.out.println(splitedString);
+				// }
 			}
 		}
 		

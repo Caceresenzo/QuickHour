@@ -10,6 +10,18 @@ public class ReferenceFormat {
 		this.format = format;
 	}
 	
+	public boolean isFormattable() {
+		return format.contains("%s");
+	}
+	
+	public String format(Object... data) {
+		if (isFormattable()) {
+			return String.format(format, data);
+		}
+		
+		return ":" + format;
+	}
+	
 	public String getName() {
 		return name;
 	}

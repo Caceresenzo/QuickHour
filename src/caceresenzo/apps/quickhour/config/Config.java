@@ -17,6 +17,7 @@ public class Config {
 	public static final String CONFIG_PATH = "config/application.json";
 	public static final String USERS_PATH = "config/users.json";
 	public static final String REFERENCES_FORMATS_PATH = "config/references-formats.json";
+	public static final String REFERENCES_SORT_TEMPLATE_PATH = "config/organization.xlsx";
 	
 	public static final float TARGET_HOUR_COUNT = 38.0F;
 	public static String LAST_FOLDER_OPEN = "./myhour/";

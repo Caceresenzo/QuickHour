@@ -113,6 +113,7 @@ public class Language {
 			o("date.day.day6", "Samedi");
 			o("date.day.saturday", "Samedi");
 			
+			o("export.manager.organization-template.file-not-found", "Erreur, la feuille d'organisation n'à pas été trouvé. L'exportation se fera que sur les references connus.");
 			o("dialog.file.export.error.file-is-null", "Erreur, auncun fichier selectionné. Exportation annulé");
 			o("export.error.failed", "Erreur, l'exportation a rencontrer un problème.\nRaison: %s");
 			o("export.column.user", "EMPLOYé".toUpperCase());
@@ -120,6 +121,8 @@ public class Language {
 			o("export.column.total", "TOTAL");
 			o("export.column.total-week", "T. SEM.");
 			o("export.column.total-reference", "T. REF.");
+			o("export.error.unreferenced-references.list", "Des références inconnus ont été trouvé:\n%s\nTotal: %s");
+			o("export.error.unreferenced-references.list.format", "  - %s (heure(s): %s)\n");
 		}
 		
 	}

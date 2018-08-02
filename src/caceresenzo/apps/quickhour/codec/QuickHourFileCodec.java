@@ -1,8 +1,8 @@
 package caceresenzo.apps.quickhour.codec;
 
 import caceresenzo.apps.quickhour.models.QuickHourFile;
-import caceresenzo.libs.codec.JsonReadWriteCodec;
+import caceresenzo.libs.codec.ReadWriteCodec;
 
-public class QuickHourFileCodec extends JsonReadWriteCodec<QuickHourFile> {
+public class QuickHourFileCodec extends ReadWriteCodec<QuickHourFile> {
 	
 }

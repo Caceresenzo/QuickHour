@@ -5,10 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -16,15 +16,23 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import caceresenzo.apps.quickhour.codec.QuickHourFileCodec;
+import caceresenzo.apps.quickhour.codec.chartable.DuplicateCharTable;
+import caceresenzo.apps.quickhour.codec.chartable.EmptyCharTable;
 import caceresenzo.apps.quickhour.config.Config;
 import caceresenzo.apps.quickhour.manager.QuickHourManager;
 import caceresenzo.apps.quickhour.models.QuickHourDay;
 import caceresenzo.apps.quickhour.models.QuickHourFile;
 import caceresenzo.apps.quickhour.models.QuickHourReference;
 import caceresenzo.apps.quickhour.models.QuickHourUser;
+import caceresenzo.apps.quickhour.models.ReferenceFormat;
+import caceresenzo.apps.quickhour.models.SortTemplateReference;
+import caceresenzo.apps.quickhour.utils.Utils;
 import caceresenzo.libs.internationalization.i18n;
+import caceresenzo.libs.string.StringUtils;
 
-public class ExcelExportQuickHourFileCodec extends QuickHourFileCodec {
+public class ExcelExportQuickHourFileCodec extends QuickHourFileCodec implements EmptyCharTable, DuplicateCharTable {
+	
+	private static final float FORBIDDEN_VALUE = Float.NEGATIVE_INFINITY;
 	
 	@Override
 	public void write(File file, QuickHourFile quickHourFile) throws Exception {
@@ -46,6 +54,10 @@ public class ExcelExportQuickHourFileCodec extends QuickHourFileCodec {
 				sheet.autoSizeColumn(colNum);
 				Cell cell = row.createCell(colNum++);
 				
+				if (field.equals(FORBIDDEN_VALUE)) {
+					continue;
+				}
+				
 				if (field instanceof String) {
 					cell.setCellValue((String) field);
 				} else if (field instanceof Integer) {
@@ -53,7 +65,7 @@ public class ExcelExportQuickHourFileCodec extends QuickHourFileCodec {
 				} else if (field instanceof Float) {
 					cell.setCellValue((Float) field);
 				} else {
-					cell.setCellValue("DEF:" + String.valueOf(field));
+					cell.setCellValue("?=" + field.getClass().getSimpleName() + ";" + String.valueOf(field));
 				}
 			}
 		}
@@ -179,7 +191,36 @@ public class ExcelExportQuickHourFileCodec extends QuickHourFileCodec {
 	}
 	
 	private Map<String, Float> extractAllStringReferenceAndTime(QuickHourFile quickHourFile) {
-		Map<String, Float> referencesMap = new TreeMap<String, Float>();
+		Map<String, Float> referencesMap = new LinkedHashMap<String, Float>();
+		List<QuickHourReference> unreferencedReferences = new ArrayList<QuickHourReference>();
+		String emptyString = EMPTY;
+		
+		for (ReferenceFormat referenceFormat : QuickHourManager.getQuickHourManager().getReferencesFormats()) {
+			if (!(referenceFormat instanceof SortTemplateReference)) {
+				continue;
+			}
+			
+			SortTemplateReference sortTemplateReference = (SortTemplateReference) referenceFormat;
+			
+			String targetString = "";
+			float value = 0.0F;
+			
+			if (sortTemplateReference.isDisplayable()) {
+				targetString = sortTemplateReference.getString();
+			} else {
+				targetString = (emptyString += EMPTY);
+				value = FORBIDDEN_VALUE;
+			}
+			
+			while (referencesMap.containsKey(targetString)) {
+				targetString += DUPLICATE;
+			}
+			
+			referencesMap.put(targetString, value);
+		}
+		
+		int timesToMultiply = referencesMap.containsKey(StringUtils.multiplySequence(EMPTY, 20)) ? 21 : 20; // if -*20 is already in map, do -*21
+		referencesMap.put(StringUtils.multiplySequence(EMPTY, timesToMultiply), FORBIDDEN_VALUE); // Separate know-reference from unknown-reference
 		
 		for (QuickHourUser user : quickHourFile.getUsersHours()) {
 			if (user.getDays() == null || user.getDays().isEmpty()) {
@@ -192,13 +233,28 @@ public class ExcelExportQuickHourFileCodec extends QuickHourFileCodec {
 				}
 				
 				for (QuickHourReference reference : day.getReferences()) {
-					float mapTime = referencesMap.getOrDefault(reference.getReference(), 0.0F);
+					float mapTime = referencesMap.getOrDefault(reference.getReference(), Float.POSITIVE_INFINITY);
+					
+					if (mapTime == Float.POSITIVE_INFINITY) {
+						unreferencedReferences.add(reference);
+						mapTime = 0;
+					}
 					
 					mapTime += reference.getHourCount();
 					
 					referencesMap.put(reference.getReference(), mapTime);
 				}
 			}
+		}
+		
+		if (!unreferencedReferences.isEmpty()) {
+			StringBuilder builder = new StringBuilder();
+			
+			for (QuickHourReference reference : unreferencedReferences) {
+				builder.append(i18n.getString("export.error.unreferenced-references.list.format", reference.getReference(), reference.getHourCount()));
+			}
+			
+			Utils.showErrorDialog("export.error.unreferenced-references.list", builder.toString(), unreferencedReferences.size());
 		}
 		
 		return referencesMap;

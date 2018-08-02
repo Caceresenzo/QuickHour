@@ -41,10 +41,10 @@ public class DayItemPanel extends JPanel {
 		dayPanel.setLayout(gl_dayPanel);
 		itemPanel.setLayout(new GridLayout(0, 1, 0, 0));
 		setLayout(groupLayout);
-		
 	}
 	
 	public JPanel getItemPanel() {
 		return itemPanel;
 	}
+	
 }

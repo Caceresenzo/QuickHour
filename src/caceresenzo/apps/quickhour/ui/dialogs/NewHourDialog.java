@@ -13,7 +13,6 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.security.auth.callback.Callback;
 import javax.swing.ComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -39,6 +38,7 @@ import caceresenzo.apps.quickhour.models.QuickHourFile;
 import caceresenzo.apps.quickhour.models.QuickHourReference;
 import caceresenzo.apps.quickhour.models.QuickHourUser;
 import caceresenzo.apps.quickhour.models.ReferenceFormat;
+import caceresenzo.apps.quickhour.models.SortTemplateReference;
 import caceresenzo.apps.quickhour.utils.Utils;
 import caceresenzo.libs.internationalization.i18n;
 import caceresenzo.libs.logger.Logger;
@@ -326,7 +326,7 @@ public class NewHourDialog extends JDialog implements ActionListener {
 				QuickHourUser user = (QuickHourUser) userSelectionComboBoxModel.getSelectedItem();
 				ReferenceFormat referenceFormat = (ReferenceFormat) referenceFormatComboBoxModel.getSelectedItem();
 				
-				String formattedReference = String.format(referenceFormat.getFormat(), rawReferenceValue);
+				String formattedReference = referenceFormat.format(rawReferenceValue);
 				
 				// Resolving file
 				QuickHourFile quickHourFile = WorkHandler.getActualQuickHourFile();
@@ -584,7 +584,11 @@ public class NewHourDialog extends JDialog implements ActionListener {
 			
 			ReferenceFormat referenceFormat = (ReferenceFormat) value;
 			
-			setText(String.format("%s: %s", referenceFormat.getDisplay(), referenceFormat.getFormat().replace("%s", "[x]")));
+			if (referenceFormat instanceof SortTemplateReference) {
+				setText(String.format("$: %s", ((SortTemplateReference) referenceFormat).getString()));
+			} else {
+				setText(String.format("%s: %s", referenceFormat.getDisplay(), referenceFormat.getFormat().replace("%s", "[x]")));
+			}
 			
 			return this;
 		}
@@ -599,7 +603,17 @@ public class NewHourDialog extends JDialog implements ActionListener {
 		public ReferenceSelectionComboBoxModel(List<ReferenceFormat> referencesFormats) {
 			super();
 			
-			this.referencesFormats = referencesFormats;
+			this.referencesFormats = new ArrayList<ReferenceFormat>();
+			
+			for (ReferenceFormat reference : referencesFormats) {
+				if (reference instanceof SortTemplateReference) {
+					if (!((SortTemplateReference) reference).isDisplayable()) { // If not, return
+						continue;
+					}
+				}
+				
+				this.referencesFormats.add(reference);
+			}
 		}
 		
 		@Override
