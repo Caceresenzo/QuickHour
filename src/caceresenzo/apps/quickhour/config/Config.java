@@ -19,11 +19,11 @@ public class Config {
 	public static final String REFERENCES_FORMATS_PATH = "config/references-formats.json";
 	public static final String REFERENCES_SORT_TEMPLATE_PATH = "config/organization.xlsx";
 	
-	public static final float TARGET_HOUR_COUNT = 38.0F;
+	public static float TARGET_HOUR_COUNT = 38.0F;
 	public static String LAST_FOLDER_OPEN = "./myhour/";
 	public static String LAST_FOLDER_EXPORT_OPEN = "./export/";
-	public static final String FILE_EXTENSION = "qhr";
-	public static final String EXCEL_FILE_EXTENSION = "xlsx";
+	public static String FILE_EXTENSION = "qhr";
+	public static String EXCEL_FILE_EXTENSION = "xlsx";
 	
 	public static void prepareConfig() {
 		for (int i = 0; i < 7; i++) {

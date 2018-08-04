@@ -15,6 +15,13 @@ public class ClosingHandler {
 	public static void handleClose() {
 		Logger.info("ClosingHandler as been called, saving everything up!");
 		
+		try {
+			ApplicationHandler.saveConfig();
+		} catch (Exception exception) {
+			Logger.exception(exception, "Failed to save application config.");
+			Utils.showErrorDialog("application.config.error.failed-saving", exception.getLocalizedMessage());
+		}
+		
 		List<QuickHourUser> users = QuickHourManager.getQuickHourManager().getUsers();
 		
 		try {

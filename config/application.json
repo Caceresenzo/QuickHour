@@ -1,0 +1,13 @@
+{
+	"settings": {
+		"last_export_path": "C:/Users/cacer/OneDrive/Developments/Workspace/Java.App.QuickHour/export/",
+		"last_open_path": "C:/Users/cacer/OneDrive/Developments/Workspace/Java.App.QuickHour/myhour/"
+	},
+	"extensions": {
+		"excel": "xlsx",
+		"quickhour": "qhr"
+	},
+	"quickhour": {
+		"hour_goal": 38.0
+	}
+}

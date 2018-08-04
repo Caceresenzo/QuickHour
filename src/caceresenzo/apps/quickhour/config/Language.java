@@ -113,8 +113,10 @@ public class Language {
 			o("date.day.day6", "Samedi");
 			o("date.day.saturday", "Samedi");
 			
+			o("application.config.error.failed-saving", "Erreur, le fichier de configuration n'a pas réussi à se sauvegarder.\nCause: %s");
+			
 			o("export.manager.organization-template.file-not-found", "Erreur, la feuille d'organisation n'à pas été trouvé. L'exportation se fera que sur les references connus.");
-			o("dialog.file.export.error.file-is-null", "Erreur, auncun fichier selectionné. Exportation annulé");
+			o("dialog.file.export.error.file-is-null", "Erreur, aucun fichier selectionné. Exportation annulé");
 			o("export.error.failed", "Erreur, l'exportation a rencontrer un problème.\nRaison: %s");
 			o("export.info.success", "Exportation terminé.\nChemin d'accés: %s");
 			o("export.column.preheader.total-known-reference-column", "NBR REF. CONNU");

@@ -1,0 +1,8 @@
+java.io.FileNotFoundException: .\export\debug.xlsx (Le processus ne peut pas accéder au fichier car ce fichier est utilisé par un autre processus)
+	at java.io.FileOutputStream.open0(Native Method)
+	at java.io.FileOutputStream.open(Unknown Source)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at caceresenzo.apps.quickhour.codec.implementations.ExcelExportQuickHourFileCodec.write(ExcelExportQuickHourFileCodec.java:79)
+	at caceresenzo.apps.quickhour.handler.WorkHandler.exportFile(WorkHandler.java:135)
+	at caceresenzo.apps.quickhour.TestUnits$ExportTest.main(TestUnits.java:104)

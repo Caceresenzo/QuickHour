@@ -7,6 +7,7 @@ import java.util.List;
 import caceresenzo.apps.quickhour.codec.implementations.ExcelReferenceSortTemplateCodec;
 import caceresenzo.apps.quickhour.codec.implementations.JsonReferenceFormatCodec;
 import caceresenzo.apps.quickhour.config.Config;
+import caceresenzo.apps.quickhour.handler.ApplicationHandler;
 import caceresenzo.apps.quickhour.models.QuickHourDay;
 import caceresenzo.apps.quickhour.models.QuickHourReference;
 import caceresenzo.apps.quickhour.models.QuickHourUser;
@@ -39,6 +40,9 @@ public class QuickHourManager {
 		} else {
 			referencesFormats.addAll(knownReferences);
 		}
+		
+		ApplicationHandler.initalize();
+		
 		return this;
 	}
 	

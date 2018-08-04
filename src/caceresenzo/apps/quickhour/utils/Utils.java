@@ -21,6 +21,7 @@ import caceresenzo.apps.quickhour.config.Config;
 import caceresenzo.libs.codec.chartable.SeparatorCharTable;
 import caceresenzo.libs.filesystem.FileUtils;
 import caceresenzo.libs.internationalization.i18n;
+import caceresenzo.libs.logger.Logger;
 
 public class Utils implements SeparatorCharTable {
 	
@@ -50,6 +51,8 @@ public class Utils implements SeparatorCharTable {
 	}
 	
 	public static File selectFile(String extention) {
+		Logger.info("Opening file chooser dialog, extension: " + extention + ", last saved path: " + (extention.equalsIgnoreCase(Config.EXCEL_FILE_EXTENSION) ? Config.LAST_FOLDER_EXPORT_OPEN : Config.LAST_FOLDER_OPEN));
+		
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setCurrentDirectory(new File(extention.equalsIgnoreCase(Config.EXCEL_FILE_EXTENSION) ? Config.LAST_FOLDER_EXPORT_OPEN : Config.LAST_FOLDER_OPEN));
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
