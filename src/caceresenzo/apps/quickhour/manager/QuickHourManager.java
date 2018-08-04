@@ -22,6 +22,7 @@ public class QuickHourManager {
 	
 	private List<QuickHourUser> users;
 	private List<ReferenceFormat> referencesFormats;
+	private List<SortTemplateReference> knownReferences;
 	
 	public QuickHourManager() {
 		this.users = new ArrayList<QuickHourUser>();
@@ -31,11 +32,12 @@ public class QuickHourManager {
 	public QuickHourManager initialize() throws Exception {
 		referencesFormats.addAll(new JsonReferenceFormatCodec().read(new File(Config.REFERENCES_FORMATS_PATH)));
 		
-		List<SortTemplateReference> referenceSortTemplates = new ExcelReferenceSortTemplateCodec().read(new File(Config.REFERENCES_SORT_TEMPLATE_PATH));
-		if (referenceSortTemplates == null) {
+		knownReferences = new ExcelReferenceSortTemplateCodec().read(new File(Config.REFERENCES_SORT_TEMPLATE_PATH));
+		if (knownReferences == null) {
 			Utils.showErrorDialog("export.manager.organization-template.file-not-found");
+			knownReferences = new ArrayList<SortTemplateReference>();
 		} else {
-			referencesFormats.addAll(referenceSortTemplates);
+			referencesFormats.addAll(knownReferences);
 		}
 		return this;
 	}
@@ -96,6 +98,10 @@ public class QuickHourManager {
 		}
 		
 		return referencesFormats;
+	}
+	
+	public List<SortTemplateReference> getKnownReferences() {
+		return knownReferences;
 	}
 	
 	public static QuickHourManager getQuickHourManager() {

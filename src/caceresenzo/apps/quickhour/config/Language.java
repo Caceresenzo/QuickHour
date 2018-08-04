@@ -116,6 +116,8 @@ public class Language {
 			o("export.manager.organization-template.file-not-found", "Erreur, la feuille d'organisation n'à pas été trouvé. L'exportation se fera que sur les references connus.");
 			o("dialog.file.export.error.file-is-null", "Erreur, auncun fichier selectionné. Exportation annulé");
 			o("export.error.failed", "Erreur, l'exportation a rencontrer un problème.\nRaison: %s");
+			o("export.info.success", "Exportation terminé.\nChemin d'accés: %s");
+			o("export.column.preheader.total-known-reference-column", "NBR REF. CONNU");
 			o("export.column.user", "EMPLOYé".toUpperCase());
 			o("export.column.day", "JOUR");
 			o("export.column.total", "TOTAL");

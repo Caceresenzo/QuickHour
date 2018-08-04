@@ -1,9 +1,7 @@
 package caceresenzo.apps.quickhour.codec.implementations;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,11 +26,14 @@ import caceresenzo.apps.quickhour.models.ReferenceFormat;
 import caceresenzo.apps.quickhour.models.SortTemplateReference;
 import caceresenzo.apps.quickhour.utils.Utils;
 import caceresenzo.libs.internationalization.i18n;
+import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.string.StringUtils;
 
 public class ExcelExportQuickHourFileCodec extends QuickHourFileCodec implements EmptyCharTable, DuplicateCharTable {
 	
 	private static final float FORBIDDEN_VALUE = Float.NEGATIVE_INFINITY;
+	
+	private QuickHourManager quickHourManager = QuickHourManager.getQuickHourManager();
 	
 	@Override
 	public void write(File file, QuickHourFile quickHourFile) throws Exception {
@@ -44,7 +45,7 @@ public class ExcelExportQuickHourFileCodec extends QuickHourFileCodec implements
 		XSSFSheet sheet = workbook.createSheet(Config.APPLICATION_NAME);
 		
 		int rowNum = 0;
-		System.out.println("Creating excel");
+		Logger.info("Exporting to excel worksheet...");
 		
 		for (List<Object> datatype : createDataTable(quickHourFile)) {
 			Row row = sheet.createRow(rowNum++);
@@ -70,18 +71,25 @@ public class ExcelExportQuickHourFileCodec extends QuickHourFileCodec implements
 			}
 		}
 		
+		boolean errorAppend = false;
+		
 		try {
 			FileOutputStream outputStream = new FileOutputStream(file);
 			workbook.write(outputStream);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception exception) {
+			errorAppend = true;
+			Logger.exception(exception, "Failed to export.");
+			Utils.showErrorDialog("export.error.failed", exception.getLocalizedMessage());
 		} finally {
 			workbook.close();
 		}
 		
-		System.out.println("Done");
+		if (errorAppend) {
+			Logger.info("Cancelled!");
+		} else {
+			Logger.info("Finished!");
+			Utils.showInfoDialog("export.info.success", file.getAbsolutePath());
+		}
 	}
 	
 	private List<List<Object>> createDataTable(QuickHourFile quickHourFile) {
@@ -92,8 +100,12 @@ public class ExcelExportQuickHourFileCodec extends QuickHourFileCodec implements
 		/*
 		 * Header
 		 */
+		List<Object> preheader = new ArrayList<Object>();
 		List<Object> header = new ArrayList<Object>();
 		List<Object> subheader = new ArrayList<Object>();
+		
+		preheader.add(i18n.getString("export.column.preheader.total-known-reference-column"));
+		preheader.add(quickHourManager.getKnownReferences().size());
 		
 		header.add(i18n.getString("export.column.user"));
 		header.add("");
@@ -114,6 +126,9 @@ public class ExcelExportQuickHourFileCodec extends QuickHourFileCodec implements
 			header.add(entry.getKey());
 			subheader.add(entry.getValue());
 		}
+		
+		output.add(preheader);
+		output.add(skip);
 		
 		output.add(header);
 		output.add(subheader);
