@@ -130,11 +130,11 @@ public class TestUnits {
 		}
 		
 		public static void dump(File file, boolean reSplit) throws Exception {
-			File outputFolder = new File(file.getAbsoluteFile().getParentFile(), "/" + file.getName() + "--output/");
+			File outputFolder = new File(file.getAbsoluteFile().getParentFile(), "/" + file.getName() + "--output/").getAbsoluteFile();
 			outputFolder.mkdirs();
 			
 			int index = 0;
-			for (List<String> strings : getData(new File("Déclaration d'heures NEUVY_2018.xlsx"))) {
+			for (List<String> strings : getData(file)) {
 				Logger.info("Processing sheet: " + index);
 				
 				SimpleLineStringBuilder builder = new SimpleLineStringBuilder();

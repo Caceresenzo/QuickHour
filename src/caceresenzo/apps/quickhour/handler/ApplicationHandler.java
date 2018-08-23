@@ -1,7 +1,6 @@
 package caceresenzo.apps.quickhour.handler;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 import caceresenzo.apps.quickhour.codec.SortReferenceTemplateCodec;
@@ -55,67 +54,75 @@ public class ApplicationHandler {
 			JsonObject json = (JsonObject) new JsonParser().parse(data);
 			
 			/* Settings */
-			Map<String, Object> settingsMap = (Map<String, Object>) json.getOrDefault(JSON_SETTINGS, new HashMap<>());
+			Map<String, Object> settingsMap = (Map<String, Object>) json.get(JSON_SETTINGS);
 			
-			if (settingsMap.containsKey(JSON_SETTINGS_LAST_EXPORT_PATH)) {
-				Config.LAST_FOLDER_OPEN = (String) settingsMap.get(JSON_SETTINGS_LAST_EXPORT_PATH);
+			if (settingsMap != null) {
+				if (settingsMap.containsKey(JSON_SETTINGS_LAST_EXPORT_PATH)) {
+					Config.LAST_FOLDER_EXPORT_OPEN = (String) settingsMap.get(JSON_SETTINGS_LAST_EXPORT_PATH);
+					
+					printLoaded("SETTINGS_LAST_EXPORT_PATH", Config.LAST_FOLDER_EXPORT_OPEN);
+				}
 				
-				printLoaded("SETTINGS_LAST_EXPORT_PATH", Config.LAST_FOLDER_OPEN);
-			}
-			
-			if (settingsMap.containsKey(JSON_SETTINGS_LAST_OPEN_PATH)) {
-				Config.LAST_FOLDER_EXPORT_OPEN = (String) settingsMap.get(JSON_SETTINGS_LAST_OPEN_PATH);
-				
-				printLoaded("SETTINGS_LAST_OPEN_PATH", Config.LAST_FOLDER_EXPORT_OPEN);
+				if (settingsMap.containsKey(JSON_SETTINGS_LAST_OPEN_PATH)) {
+					Config.LAST_FOLDER_OPEN = (String) settingsMap.get(JSON_SETTINGS_LAST_OPEN_PATH);
+					
+					printLoaded("SETTINGS_LAST_OPEN_PATH", Config.LAST_FOLDER_OPEN);
+				}
 			}
 			
 			/* Extentions */
-			Map<String, Object> extensionsMap = (Map<String, Object>) json.getOrDefault(JSON_EXTENSIONS, new HashMap<>());
+			Map<String, Object> extensionsMap = (Map<String, Object>) json.get(JSON_EXTENSIONS);
 			
-			if (extensionsMap.containsKey(JSON_EXTENSIONS_EXCEL)) {
-				Config.EXCEL_FILE_EXTENSION = (String) extensionsMap.get(JSON_EXTENSIONS_EXCEL);
+			if (extensionsMap != null) {
+				if (extensionsMap.containsKey(JSON_EXTENSIONS_EXCEL)) {
+					Config.EXCEL_FILE_EXTENSION = (String) extensionsMap.get(JSON_EXTENSIONS_EXCEL);
+					
+					printLoaded("EXTENSIONS_EXCEL", Config.EXCEL_FILE_EXTENSION);
+				}
 				
-				printLoaded("EXTENSIONS_EXCEL", Config.EXCEL_FILE_EXTENSION);
-			}
-			
-			if (extensionsMap.containsKey(JSON_EXTENSIONS_QUICKHOUR)) {
-				Config.FILE_EXTENSION = (String) extensionsMap.get(JSON_EXTENSIONS_QUICKHOUR);
-				
-				printLoaded("EXTENSIONS_QUICKHOUR", Config.FILE_EXTENSION);
+				if (extensionsMap.containsKey(JSON_EXTENSIONS_QUICKHOUR)) {
+					Config.FILE_EXTENSION = (String) extensionsMap.get(JSON_EXTENSIONS_QUICKHOUR);
+					
+					printLoaded("EXTENSIONS_QUICKHOUR", Config.FILE_EXTENSION);
+				}
 			}
 			
 			/* QuickHour */
-			Map<String, Object> quickhourMap = (Map<String, Object>) json.getOrDefault(JSON_QUICKHOUR, new HashMap<>());
+			Map<String, Object> quickhourMap = (Map<String, Object>) json.get(JSON_QUICKHOUR);
 			
-			if (quickhourMap.containsKey(JSON_QUICKHOUR_HOURGOAL)) {
-				Config.TARGET_HOUR_COUNT = ParseUtils.parseFloat(quickhourMap.get(JSON_QUICKHOUR_HOURGOAL), Config.TARGET_HOUR_COUNT);
-				
-				printLoaded("QUICKHOUR_HOURGOAL", Config.TARGET_HOUR_COUNT);
+			if (quickhourMap != null) {
+				if (quickhourMap.containsKey(JSON_QUICKHOUR_HOURGOAL)) {
+					Config.TARGET_HOUR_COUNT = ParseUtils.parseFloat(quickhourMap.get(JSON_QUICKHOUR_HOURGOAL), Config.TARGET_HOUR_COUNT);
+					
+					printLoaded("QUICKHOUR_HOURGOAL", Config.TARGET_HOUR_COUNT);
+				}
 			}
 			
 			/* Organizer */
-			Map<String, Object> organizerMap = (Map<String, Object>) json.getOrDefault(JSON_ORGANIZER, new HashMap<>());
+			Map<String, Object> organizerMap = (Map<String, Object>) json.get(JSON_ORGANIZER);
 			
-			if (organizerMap.containsKey(JSON_ORGANIZER_CODEC_CLASS)) {
-				try {
-					Config.REFERENCE_SORT_CODEC = (SortReferenceTemplateCodec) Class.forName("caceresenzo.apps.quickhour.codec.implementations." + organizerMap.get(JSON_ORGANIZER_CODEC_CLASS)).newInstance();
-				} catch (Exception exception) {
-					Logger.exception(exception, "Class %s can't be loaded.", organizerMap.get(JSON_ORGANIZER_CODEC_CLASS));
+			if (organizerMap != null) {
+				if (organizerMap.containsKey(JSON_ORGANIZER_CODEC_CLASS)) {
+					try {
+						Config.REFERENCE_SORT_CODEC = (SortReferenceTemplateCodec) Class.forName("caceresenzo.apps.quickhour.codec.implementations." + organizerMap.get(JSON_ORGANIZER_CODEC_CLASS)).newInstance();
+					} catch (Exception exception) {
+						Logger.exception(exception, "Class %s can't be loaded.", organizerMap.get(JSON_ORGANIZER_CODEC_CLASS));
+					}
+					
+					printLoaded("ORGANIZER_CODEC_CLASS", Config.REFERENCE_SORT_CODEC.getClass().getSimpleName());
 				}
 				
-				printLoaded("ORGANIZER_CODEC_CLASS", Config.REFERENCE_SORT_CODEC.getClass().getSimpleName());
-			}
-			
-			if (organizerMap.containsKey(JSON_ORGANIZER_PAGE)) {
-				Config.REFERENCE_SORT_CODEC_SHEET_PAGE = ParseUtils.parseInt(organizerMap.get(JSON_ORGANIZER_PAGE), Config.NO_VALUE);
+				if (organizerMap.containsKey(JSON_ORGANIZER_PAGE)) {
+					Config.REFERENCE_SORT_CODEC_SHEET_PAGE = ParseUtils.parseInt(organizerMap.get(JSON_ORGANIZER_PAGE), Config.NO_VALUE);
+					
+					printLoaded("ORGANIZER_PAGE", Config.REFERENCE_SORT_CODEC_SHEET_PAGE);
+				}
 				
-				printLoaded("ORGANIZER_PAGE", Config.REFERENCE_SORT_CODEC_SHEET_PAGE);
-			}
-			
-			if (organizerMap.containsKey(JSON_ORGANIZER_FILE)) {
-				Config.REFERENCES_SORT_TEMPLATE_PATH = (String) organizerMap.get(JSON_ORGANIZER_FILE);
-				
-				printLoaded("ORGANIZER_FILE", Config.REFERENCES_SORT_TEMPLATE_PATH);
+				if (organizerMap.containsKey(JSON_ORGANIZER_FILE)) {
+					Config.REFERENCES_SORT_TEMPLATE_PATH = (String) organizerMap.get(JSON_ORGANIZER_FILE);
+					
+					printLoaded("ORGANIZER_FILE", Config.REFERENCES_SORT_TEMPLATE_PATH);
+				}
 			}
 			
 			return null;
@@ -167,8 +174,8 @@ public class ApplicationHandler {
 			builder.appendln("{");
 			
 			builder.appendln(TAB + "\"" + JSON_SETTINGS + "\": {");
-			builder.appendln(TAB + TAB + "\"" + JSON_SETTINGS_LAST_EXPORT_PATH + "\": \"" + (Config.LAST_FOLDER_EXPORT_OPEN + (Config.LAST_FOLDER_EXPORT_OPEN.endsWith("\\") || Config.LAST_FOLDER_EXPORT_OPEN.endsWith("/") ? "" : "/")).replace("\\", "/") + "\",");
-			builder.appendln(TAB + TAB + "\"" + JSON_SETTINGS_LAST_OPEN_PATH + "\": \"" + (Config.LAST_FOLDER_OPEN + (Config.LAST_FOLDER_OPEN.endsWith("\\") || Config.LAST_FOLDER_OPEN.endsWith("/") ? "" : "/")).replace("\\", "/") + "\"");
+			builder.appendln(TAB + TAB + "\"" + JSON_SETTINGS_LAST_EXPORT_PATH + "\": \"" + formatPath(Config.LAST_FOLDER_EXPORT_OPEN) + "\",");
+			builder.appendln(TAB + TAB + "\"" + JSON_SETTINGS_LAST_OPEN_PATH + "\": \"" + formatPath(Config.LAST_FOLDER_OPEN) + "\"");
 			builder.appendln(TAB + "},");
 			
 			builder.appendln(TAB + "\"" + JSON_EXTENSIONS + "\": {");
@@ -189,6 +196,10 @@ public class ApplicationHandler {
 			builder.appendln("}");
 			
 			StringUtils.stringToFile(file, builder.toString());
+		}
+		
+		private String formatPath(String basePath) {
+			return (basePath + (basePath.endsWith("\\") || basePath.endsWith("/") ? "" : "/")).replace("\\", "/");
 		}
 		
 	}

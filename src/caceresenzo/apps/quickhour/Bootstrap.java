@@ -34,7 +34,7 @@ public class Bootstrap {
 		Options options = new Options();
 		
 		Option inputOption = new Option("i", "input", true, "input file");
-		inputOption.setRequired(true);
+		inputOption.setRequired(false);
 		options.addOption(inputOption);
 		
 		CommandLineParser parser = new DefaultParser();
@@ -51,13 +51,19 @@ public class Bootstrap {
 			System.exit(1);
 		}
 		
-		inputFile = new File(commandLine.getOptionValue("input"));
+		try {
+			if (commandLine.getOptionValue("input") != null) {
+				inputFile = new File(commandLine.getOptionValue("input"));
+			}
+		} catch (Exception exception) {
+			Logger.exception(exception, "Failed to get input from command line");
+		}
 		
 		/* Main manager initialization */
 		QuickHourManager.getQuickHourManager().initialize();
 		
 		/* Loading data */
-		new JsonUserCodec().read(new File("config/users.json"));
+		new JsonUserCodec().read(new File(Config.USERS_PATH));
 		// QuickHourFile quickHourFile = new JsonQuickHourFileCodec().read(new File("myhour/WEEK 30.qhr"));
 		
 		/* Start UI */
@@ -65,7 +71,7 @@ public class Bootstrap {
 	}
 	
 	public static void onUiReady() {
-		if (inputFile.exists()) {
+		if (inputFile != null && inputFile.exists()) {
 			WorkHandler.openFile(inputFile);
 		}
 	}

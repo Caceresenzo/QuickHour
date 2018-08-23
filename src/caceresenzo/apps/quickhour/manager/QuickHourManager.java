@@ -34,6 +34,7 @@ public class QuickHourManager {
 		
 		ApplicationHandler.initalize();
 		
+		Logger.info("Reading reference template...");
 		knownReferences = Config.REFERENCE_SORT_CODEC.read(new File(Config.REFERENCES_SORT_TEMPLATE_PATH));
 		if (knownReferences == null) {
 			Utils.showErrorDialog("export.manager.organization-template.file-not-found");
@@ -41,6 +42,7 @@ public class QuickHourManager {
 		} else {
 			referencesFormats.addAll(knownReferences);
 		}
+		Logger.info("Done.");
 		
 		return this;
 	}

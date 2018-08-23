@@ -11,6 +11,7 @@ import caceresenzo.apps.quickhour.models.ReferenceFormat;
 import caceresenzo.libs.filesystem.FileChecker;
 import caceresenzo.libs.json.JsonObject;
 import caceresenzo.libs.json.parser.JsonParser;
+import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.parse.ParseUtils;
 import caceresenzo.libs.string.StringUtils;
 
@@ -23,10 +24,10 @@ public class JsonReferenceFormatCodec extends ReferenceFormatCodec {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ReferenceFormat> read(File file) throws Exception {
-		List<ReferenceFormat> formats = new ArrayList<ReferenceFormat>();
+		List<ReferenceFormat> formats = new ArrayList<>();
 		
 		if (!FileChecker.checkFile(file, true, true)) {
-			write(file, null);
+			Logger.info("File not exists or is not valid. (%s)", file.getAbsolutePath());
 			return formats;
 		}
 		

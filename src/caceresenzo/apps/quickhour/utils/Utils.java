@@ -19,7 +19,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import caceresenzo.apps.quickhour.config.Config;
 import caceresenzo.libs.codec.chartable.SeparatorCharTable;
-import caceresenzo.libs.filesystem.FileUtils;
 import caceresenzo.libs.internationalization.i18n;
 import caceresenzo.libs.logger.Logger;
 
@@ -50,38 +49,52 @@ public class Utils implements SeparatorCharTable {
 		return JOptionPane.showOptionDialog(null, data == null || data.length == 0 ? i18n.getString(i18nKey) : i18n.getString(i18nKey, data), i18n.getString("dialog.confirm.save.title"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] { i18n.getString("dialog.confirm.save.button.yes"), i18n.getString("dialog.confirm.save.button.no") }, "default") == JOptionPane.YES_OPTION;
 	}
 	
-	// TODO: To remake
 	public static File selectFile(String extention) {
+		JFileChooser fileChooser = new JFileChooser();
+		
 		if (extention != null) {
-			Logger.info("Opening file chooser dialog, extension: " + extention + ", last saved path: " + (extention.equalsIgnoreCase(Config.EXCEL_FILE_EXTENSION) ? Config.LAST_FOLDER_EXPORT_OPEN : Config.LAST_FOLDER_OPEN));
+			Logger.info("Opening file chooser dialog, extension: " + extention + ", last saved path: " + getPathByExtention(extention));
+			fileChooser.setCurrentDirectory(new File(getPathByExtention(extention)));
 		}
 		
-		JFileChooser fileChooser = new JFileChooser();
-		if (extention != null) {
-			fileChooser.setCurrentDirectory(new File(extention.equalsIgnoreCase(Config.EXCEL_FILE_EXTENSION) ? Config.LAST_FOLDER_EXPORT_OPEN : Config.LAST_FOLDER_OPEN));
-		}
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		int response = fileChooser.showSaveDialog(new JLabel(""));
+		
 		if (response == JFileChooser.APPROVE_OPTION) {
 			File selectedFile = fileChooser.getSelectedFile();
-			File absoluteParent = new File(selectedFile.getAbsolutePath()).getParentFile();
+			File absoluteParent = selectedFile.getAbsoluteFile().getParentFile();
 			
 			if (extention != null) {
-				if (!FileUtils.getExtension(selectedFile).equalsIgnoreCase("." + extention)) {
-					selectedFile = new File(new File(selectedFile.getAbsolutePath()).getParent(), selectedFile.getName() + (selectedFile.getName().endsWith(".") ? "" : ".") + Config.FILE_EXTENSION);
+				String filename = selectedFile.getName();
+				
+				if (!filename.toUpperCase().endsWith("." + extention.toUpperCase())) {
+					selectedFile = new File(absoluteParent, filename + (selectedFile.getName().endsWith(".") ? "" : ".") + extention);
 				}
 				
-				if (extention.equalsIgnoreCase(Config.EXCEL_FILE_EXTENSION)) {
-					Config.LAST_FOLDER_EXPORT_OPEN = absoluteParent.getAbsolutePath();
-				} else {
-					Config.LAST_FOLDER_OPEN = absoluteParent.getAbsolutePath();
-				}
+				setPathByExtention(extention, absoluteParent.getAbsolutePath());
 			}
 			
 			return selectedFile;
-		} else {
-			// return new File("New QuickHour File.qhr");
-			return null;
+		}
+		
+		return null;
+	}
+	
+	private static String getPathByExtention(String extention) {
+		if (extention.equalsIgnoreCase(Config.EXCEL_FILE_EXTENSION)) {
+			return Config.LAST_FOLDER_EXPORT_OPEN;
+		} else if (extention.equalsIgnoreCase(Config.FILE_EXTENSION)) {
+			return Config.LAST_FOLDER_OPEN;
+		}
+		
+		return null;
+	}
+	
+	private static void setPathByExtention(String extention, String newPath) {
+		if (extention.equalsIgnoreCase(Config.EXCEL_FILE_EXTENSION)) {
+			Config.LAST_FOLDER_EXPORT_OPEN = newPath;
+		} else if (extention.equalsIgnoreCase(Config.FILE_EXTENSION)) {
+			Config.LAST_FOLDER_OPEN = newPath;
 		}
 	}
 	
