@@ -5,11 +5,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import caceresenzo.apps.quickhour.codec.SortReferenceTemplateCodec;
+import caceresenzo.apps.quickhour.codec.implementations.ExcelReferenceSortTemplateCodec;
 import caceresenzo.libs.internationalization.i18n;
 
 public class Config {
 	
 	public static final String APPLICATION_NAME = "QuickHour";
+	
+	public static final int NO_VALUE = -1;
 	
 	public static final String STARTING_DAY = "day1";
 	public static final Map<String, String> POSSIBLE_DAYS = new LinkedHashMap<String, String>();
@@ -17,13 +21,16 @@ public class Config {
 	public static final String CONFIG_PATH = "config/application.json";
 	public static final String USERS_PATH = "config/users.json";
 	public static final String REFERENCES_FORMATS_PATH = "config/references-formats.json";
-	public static final String REFERENCES_SORT_TEMPLATE_PATH = "config/organization.xlsx";
+	public static String REFERENCES_SORT_TEMPLATE_PATH = "config/organization.xlsx";
 	
 	public static float TARGET_HOUR_COUNT = 38.0F;
 	public static String LAST_FOLDER_OPEN = "./myhour/";
 	public static String LAST_FOLDER_EXPORT_OPEN = "./export/";
 	public static String FILE_EXTENSION = "qhr";
 	public static String EXCEL_FILE_EXTENSION = "xlsx";
+
+	public static SortReferenceTemplateCodec REFERENCE_SORT_CODEC = new ExcelReferenceSortTemplateCodec();
+	public static int REFERENCE_SORT_CODEC_SHEET_PAGE = NO_VALUE;
 	
 	public static void prepareConfig() {
 		for (int i = 0; i < 7; i++) {

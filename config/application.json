@@ -9,5 +9,10 @@
 	},
 	"quickhour": {
 		"hour_goal": 38.0
+	},
+	"organizer": {
+		"codec_class": "NegroExcelReferenceSortTemplateCodec",
+		"sheet_page": 21,
+		"file": "config/negro_organization.xlsx"
 	}
 }

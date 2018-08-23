@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import caceresenzo.apps.quickhour.codec.implementations.ExcelReferenceSortTemplateCodec;
 import caceresenzo.apps.quickhour.codec.implementations.JsonReferenceFormatCodec;
 import caceresenzo.apps.quickhour.config.Config;
 import caceresenzo.apps.quickhour.handler.ApplicationHandler;
@@ -26,22 +25,22 @@ public class QuickHourManager {
 	private List<SortTemplateReference> knownReferences;
 	
 	public QuickHourManager() {
-		this.users = new ArrayList<QuickHourUser>();
-		this.referencesFormats = new ArrayList<ReferenceFormat>();
+		this.users = new ArrayList<>();
+		this.referencesFormats = new ArrayList<>();
 	}
 	
 	public QuickHourManager initialize() throws Exception {
 		referencesFormats.addAll(new JsonReferenceFormatCodec().read(new File(Config.REFERENCES_FORMATS_PATH)));
 		
-		knownReferences = new ExcelReferenceSortTemplateCodec().read(new File(Config.REFERENCES_SORT_TEMPLATE_PATH));
+		ApplicationHandler.initalize();
+		
+		knownReferences = Config.REFERENCE_SORT_CODEC.read(new File(Config.REFERENCES_SORT_TEMPLATE_PATH));
 		if (knownReferences == null) {
 			Utils.showErrorDialog("export.manager.organization-template.file-not-found");
-			knownReferences = new ArrayList<SortTemplateReference>();
+			knownReferences = new ArrayList<>();
 		} else {
 			referencesFormats.addAll(knownReferences);
 		}
-		
-		ApplicationHandler.initalize();
 		
 		return this;
 	}

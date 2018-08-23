@@ -79,9 +79,13 @@ public class Utils implements SeparatorCharTable {
 	}
 	
 	public static List<String> readExcel(File file) throws Exception {
+		return readExcel(file, 0);
+	}
+	
+	public static List<String> readExcel(File file, int sheet) throws Exception {
 		FileInputStream excelFile = new FileInputStream(file);
 		Workbook workbook = new XSSFWorkbook(excelFile);
-		Sheet datatypeSheet = workbook.getSheetAt(0);
+		Sheet datatypeSheet = workbook.getSheetAt(sheet);
 		Iterator<Row> iterator = datatypeSheet.iterator();
 		
 		List<String> data = new ArrayList<String>();

@@ -25,6 +25,8 @@ import caceresenzo.apps.quickhour.models.QuickHourUser;
 import caceresenzo.apps.quickhour.utils.Utils;
 import caceresenzo.libs.codec.chartable.SeparatorCharTable;
 import caceresenzo.libs.logger.Logger;
+import caceresenzo.libs.string.SimpleLineStringBuilder;
+import caceresenzo.libs.string.StringUtils;
 
 public class TestUnits {
 	
@@ -119,57 +121,92 @@ public class TestUnits {
 			}
 		}
 		
-		private static List<String> getData(File file) throws Exception {
-			FileInputStream excelFile = new FileInputStream(file);
-			Workbook workbook = new XSSFWorkbook(excelFile);
-			Sheet datatypeSheet = workbook.getSheetAt(0);
-			Iterator<Row> iterator = datatypeSheet.iterator();
+	}
+	
+	public static class FileDumperTest implements SeparatorCharTable {
+		
+		public static void main(String[] args) throws Exception {
 			
-			List<String> data = new ArrayList<String>();
+			File outputFolder = new File("output/");
+			outputFolder.mkdirs();
 			
-			boolean firstLoopSkiped = false;
-			while (iterator.hasNext()) {
-				Row currentRow = iterator.next();
+			int index = 0;
+			for (List<String> strings : getData(new File("Déclaration d'heures NEUVY_2018.xlsx"))) {
+				Logger.info("Processing sheet: " + index);
 				
-				if (!firstLoopSkiped) {
-					firstLoopSkiped = true;
-					continue;
-				}
+				SimpleLineStringBuilder builder = new SimpleLineStringBuilder();
 				
-				Iterator<Cell> cellIterator = currentRow.iterator();
-				
-				String cellLine = "";
-				boolean rowFirstLoop = true;
-				while (cellIterator.hasNext() && rowFirstLoop) {
-					rowFirstLoop = false;
-					Cell currentCell = cellIterator.next();
-					
-					String cellData = DATA_FILL;
-					
-					switch (currentCell.getCellTypeEnum()) { // getCellTypeEnum shown as deprecated for version 3.15, ill be renamed to getCellType starting from version 4.0
-						case STRING: {
-							cellData = currentCell.getStringCellValue();
-							break;
-						}
-						case NUMERIC: {
-							cellData = String.valueOf((int) currentCell.getNumericCellValue());
-							break;
+				for (String string : strings) {
+					for (String substring : string.split(",")) {
+						if (substring == "-") {
+							continue;
 						}
 						
-						default:
-							break;
+						builder.appendln(substring);
 					}
 					
-					if (cellData != null) {
-						cellLine += cellData + (cellIterator.hasNext() ? DATA_SEPARATOR : "");
-					}
+					// builder.appendln(string);
 				}
-				data.add(cellLine);
+				
+				StringUtils.stringToFile(new File("output", "SHEET_" + index + ".txt"), builder.toString());
+				
+				index++;
+			}
+		}
+		
+		public static List<List<String>> getData(File file) throws Exception {
+			FileInputStream excelFile = new FileInputStream(file);
+			Workbook workbook = new XSSFWorkbook(excelFile);
+			
+			List<List<String>> everyContent = new ArrayList<>();
+			
+			for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+				Sheet datatypeSheet = workbook.getSheetAt(i);
+				Iterator<Row> iterator = datatypeSheet.iterator();
+				
+				List<String> data = new ArrayList<>();
+				data.add(workbook.getNameAt(i).getSheetName());
+				data.add("\n");
+				
+				while (iterator.hasNext()) {
+					Row currentRow = iterator.next();
+					
+					Iterator<Cell> cellIterator = currentRow.iterator();
+					
+					String cellLine = "";
+					while (cellIterator.hasNext()) {
+						Cell currentCell = cellIterator.next();
+						
+						String cellData = DATA_FILL;
+						
+						switch (currentCell.getCellTypeEnum()) { // getCellTypeEnum shown as deprecated for version 3.15, ill be renamed to getCellType starting from version 4.0
+							case STRING: {
+								cellData = currentCell.getStringCellValue();
+								break;
+							}
+							case NUMERIC: {
+								cellData = String.valueOf((int) currentCell.getNumericCellValue());
+								break;
+							}
+							
+							default:
+								break;
+						}
+						
+						if (cellData != null) {
+							cellLine += cellData + (cellIterator.hasNext() ? DATA_SEPARATOR : "");
+						}
+					}
+					
+					data.add(cellLine);
+				}
+				
+				everyContent.add(data);
 			}
 			
 			workbook.close();
 			
-			return data;
+			return everyContent;
 		}
 	}
 	

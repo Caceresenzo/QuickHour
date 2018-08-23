@@ -5,15 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import caceresenzo.apps.quickhour.codec.SortReferenceTemplateCodec;
+import caceresenzo.apps.quickhour.codec.chartable.EmptyCharTable;
 import caceresenzo.apps.quickhour.models.SortTemplateReference;
 import caceresenzo.apps.quickhour.utils.Utils;
 import caceresenzo.libs.codec.chartable.SeparatorCharTable;
 import caceresenzo.libs.filesystem.FileChecker;
 
-public class ExcelReferenceSortTemplateCodec extends SortReferenceTemplateCodec implements SeparatorCharTable {
+public class ExcelReferenceSortTemplateCodec extends SortReferenceTemplateCodec implements SeparatorCharTable, EmptyCharTable {
 	
 	private static final String FILE_TABLE_HEADER = "IDENTIFIEUR,COMMENTAIRE";
-	private static final String ROW_EMPTY = "-";
 	
 	@Override
 	public List<SortTemplateReference> read(File file) throws Exception {
@@ -34,7 +34,7 @@ public class ExcelReferenceSortTemplateCodec extends SortReferenceTemplateCodec 
 				continue;
 			}
 			
-			boolean displayable = !reference[0].equals(ROW_EMPTY);
+			boolean displayable = !reference[0].equals(EMPTY);
 			
 			sortReferences.add(new SortTemplateReference(reference[0], displayable));
 		}
