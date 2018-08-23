@@ -32,6 +32,7 @@ import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
+import caceresenzo.apps.quickhour.Bootstrap;
 import caceresenzo.apps.quickhour.handler.ClosingHandler;
 import caceresenzo.apps.quickhour.handler.DebugHandler;
 import caceresenzo.apps.quickhour.handler.WorkHandler;
@@ -107,6 +108,8 @@ public class HourEditorWindow implements ActionListener {
 					SwingUtilities.updateComponentTreeUI(WINDOW.frame);
 					
 					WINDOW.updateUsers();
+					
+					Bootstrap.onUiReady();
 				} catch (Exception exception) {
 					exception.printStackTrace();
 				}
@@ -284,7 +287,7 @@ public class HourEditorWindow implements ActionListener {
 			
 			/* Open */
 			case ACTION_MENU_FILE_OPEN: {
-				WorkHandler.openFile();
+				WorkHandler.openFile(null);
 				break;
 			}
 			

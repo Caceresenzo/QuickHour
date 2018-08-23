@@ -47,7 +47,7 @@ public class Language {
 			o("dialog.confirm.save.error.save-unsaved-work.cancelled", "Sauvegarde annulé!");
 			
 			o("dialog.file.open.error.file-is-null", "Erreur, aucun fichier selectionné.");
-			o("dialog.file.open.error.load-failed", "Erreur, le fichier n'a pas pu être chargé.\nRaison: ");
+			o("dialog.file.open.error.load-failed", "Erreur, le fichier n'a pas pu être chargé.\nRaison: %s");
 			
 			o("manager.quickhour.references-formats.default.display", "<DEFAUT>");
 			

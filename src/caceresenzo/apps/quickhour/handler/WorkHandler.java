@@ -11,6 +11,7 @@ import caceresenzo.apps.quickhour.ui.HourEditorWindow;
 import caceresenzo.apps.quickhour.utils.Utils;
 import caceresenzo.libs.filesystem.FilenameUtils;
 import caceresenzo.libs.logger.Logger;
+import caceresenzo.libs.string.StringUtils;
 
 public class WorkHandler {
 	
@@ -22,8 +23,10 @@ public class WorkHandler {
 		;
 	}
 	
-	public static void openFile() {
-		File openFile = Utils.selectFile(Config.FILE_EXTENSION);
+	public static void openFile(File openFile) {
+		if (openFile == null) {
+			openFile = Utils.selectFile(Config.FILE_EXTENSION);
+		}
 		
 		if (openFile == null) {
 			Utils.showErrorDialog("dialog.file.open.error.file-is-null");
@@ -40,7 +43,7 @@ public class WorkHandler {
 			actualFile = openFile;
 		} catch (Exception exception) {
 			Logger.exception(exception, "Failed to load file");
-			Utils.showErrorDialog("dialog.file.open.error.load-failed", exception.getLocalizedMessage());
+			Utils.showErrorDialog("dialog.file.open.error.load-failed", StringUtils.fromException(exception));
 		}
 	}
 	
@@ -109,6 +112,7 @@ public class WorkHandler {
 			actualFile = null;
 		}
 	}
+	
 	public static void exportFile() {
 		exportFile(Utils.selectFile(Config.EXCEL_FILE_EXTENSION));
 	}
