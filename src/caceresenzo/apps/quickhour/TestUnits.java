@@ -126,8 +126,11 @@ public class TestUnits {
 	public static class FileDumperTest implements SeparatorCharTable {
 		
 		public static void main(String[] args) throws Exception {
-			
-			File outputFolder = new File("output/");
+			dump(new File("."), true);
+		}
+		
+		public static void dump(File file, boolean reSplit) throws Exception {
+			File outputFolder = new File(file.getAbsoluteFile().getParentFile(), "/" + file.getName() + "--output/");
 			outputFolder.mkdirs();
 			
 			int index = 0;
@@ -137,18 +140,20 @@ public class TestUnits {
 				SimpleLineStringBuilder builder = new SimpleLineStringBuilder();
 				
 				for (String string : strings) {
-					for (String substring : string.split(",")) {
-						if (substring == "-") {
-							continue;
+					if (reSplit) {
+						for (String substring : string.split(",")) {
+							if (substring == "-") {
+								continue;
+							}
+							
+							builder.appendln(substring);
 						}
-						
-						builder.appendln(substring);
+					} else {
+						builder.appendln(string);
 					}
-					
-					// builder.appendln(string);
 				}
 				
-				StringUtils.stringToFile(new File("output", "SHEET_" + index + ".txt"), builder.toString());
+				StringUtils.stringToFile(new File(outputFolder, "SHEET_" + index + ".txt"), builder.toString());
 				
 				index++;
 			}

@@ -50,25 +50,32 @@ public class Utils implements SeparatorCharTable {
 		return JOptionPane.showOptionDialog(null, data == null || data.length == 0 ? i18n.getString(i18nKey) : i18n.getString(i18nKey, data), i18n.getString("dialog.confirm.save.title"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] { i18n.getString("dialog.confirm.save.button.yes"), i18n.getString("dialog.confirm.save.button.no") }, "default") == JOptionPane.YES_OPTION;
 	}
 	
+	// TODO: To remake
 	public static File selectFile(String extention) {
-		Logger.info("Opening file chooser dialog, extension: " + extention + ", last saved path: " + (extention.equalsIgnoreCase(Config.EXCEL_FILE_EXTENSION) ? Config.LAST_FOLDER_EXPORT_OPEN : Config.LAST_FOLDER_OPEN));
+		if (extention != null) {
+			Logger.info("Opening file chooser dialog, extension: " + extention + ", last saved path: " + (extention.equalsIgnoreCase(Config.EXCEL_FILE_EXTENSION) ? Config.LAST_FOLDER_EXPORT_OPEN : Config.LAST_FOLDER_OPEN));
+		}
 		
 		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.setCurrentDirectory(new File(extention.equalsIgnoreCase(Config.EXCEL_FILE_EXTENSION) ? Config.LAST_FOLDER_EXPORT_OPEN : Config.LAST_FOLDER_OPEN));
+		if (extention != null) {
+			fileChooser.setCurrentDirectory(new File(extention.equalsIgnoreCase(Config.EXCEL_FILE_EXTENSION) ? Config.LAST_FOLDER_EXPORT_OPEN : Config.LAST_FOLDER_OPEN));
+		}
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		int response = fileChooser.showSaveDialog(new JLabel(""));
 		if (response == JFileChooser.APPROVE_OPTION) {
 			File selectedFile = fileChooser.getSelectedFile();
 			File absoluteParent = new File(selectedFile.getAbsolutePath()).getParentFile();
 			
-			if (!FileUtils.getExtension(selectedFile).equalsIgnoreCase("." + extention)) {
-				selectedFile = new File(new File(selectedFile.getAbsolutePath()).getParent(), selectedFile.getName() + (selectedFile.getName().endsWith(".") ? "" : ".") + Config.FILE_EXTENSION);
-			}
-			
-			if (extention.equalsIgnoreCase(Config.EXCEL_FILE_EXTENSION)) {
-				Config.LAST_FOLDER_EXPORT_OPEN = absoluteParent.getAbsolutePath();
-			} else {
-				Config.LAST_FOLDER_OPEN = absoluteParent.getAbsolutePath();
+			if (extention != null) {
+				if (!FileUtils.getExtension(selectedFile).equalsIgnoreCase("." + extention)) {
+					selectedFile = new File(new File(selectedFile.getAbsolutePath()).getParent(), selectedFile.getName() + (selectedFile.getName().endsWith(".") ? "" : ".") + Config.FILE_EXTENSION);
+				}
+				
+				if (extention.equalsIgnoreCase(Config.EXCEL_FILE_EXTENSION)) {
+					Config.LAST_FOLDER_EXPORT_OPEN = absoluteParent.getAbsolutePath();
+				} else {
+					Config.LAST_FOLDER_OPEN = absoluteParent.getAbsolutePath();
+				}
 			}
 			
 			return selectedFile;

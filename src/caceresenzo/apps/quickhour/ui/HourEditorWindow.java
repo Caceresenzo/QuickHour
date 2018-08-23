@@ -4,6 +4,8 @@ import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -23,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.KeyStroke;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -30,6 +33,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import caceresenzo.apps.quickhour.handler.ClosingHandler;
+import caceresenzo.apps.quickhour.handler.DebugHandler;
 import caceresenzo.apps.quickhour.handler.WorkHandler;
 import caceresenzo.apps.quickhour.manager.QuickHourManager;
 import caceresenzo.apps.quickhour.models.QuickHourDay;
@@ -45,23 +49,21 @@ import caceresenzo.apps.quickhour.ui.items.UserItemPanel;
 import caceresenzo.apps.quickhour.utils.Utils;
 import caceresenzo.libs.internationalization.i18n;
 import caceresenzo.libs.logger.Logger;
-import javax.swing.KeyStroke;
-import java.awt.event.KeyEvent;
-import java.awt.event.InputEvent;
 
 public class HourEditorWindow implements ActionListener {
 	
-	private static final String ACTION_MENU_QUICKHOUR_QUIT = "action.menu.quickhour.quit";
 	private static final String ACTION_MENU_FILE_NEW = "action.menu.file.new";
 	private static final String ACTION_MENU_FILE_OPEN = "action.menu.file.open";
 	private static final String ACTION_MENU_FILE_SAVE = "action.menu.file.save";
 	private static final String ACTION_MENU_FILE_SAVEAS = "action.menu.file.saveas";
 	private static final String ACTION_MENU_FILE_EXPORT = "action.menu.file.export";
 	private static final String ACTION_MENU_FILE_CLOSE = "action.menu.file.close";
+	private static final String ACTION_MENU_QUICKHOUR_QUIT = "action.menu.quickhour.quit";
+	private static final String ACTION_MENU_QUICKHOUR_DEBUG_DUMP = "action.menu.quickhour.debug.dump-file";
 	
 	private static final String ACTION_USER_NEW = "action.user.new";
 	private static final String ACTION_HOUR_NEW = "action.hour.new";
-	private static final String ACTION_HOUR_QUICK = "action.hour.QUICK";
+	private static final String ACTION_HOUR_QUICK = "action.hour.quick";
 	
 	private static HourEditorWindow WINDOW;
 	
@@ -89,6 +91,8 @@ public class HourEditorWindow implements ActionListener {
 	private JMenu quickHourMenu;
 	private JMenuItem quickHourQuitApplicationItemMenu;
 	private JMenuItem fileExportMenuItem;
+	private JMenu quickHourDebugSubMenu;
+	private JMenuItem quickHourDebugDumpExcelFileMenuItem;
 	
 	public static void start() {
 		EventQueue.invokeLater(new Runnable() {
@@ -221,6 +225,16 @@ public class HourEditorWindow implements ActionListener {
 		quickHourMenu = new JMenu(i18n.getString("menu.quickhour.title"));
 		menuBar.add(quickHourMenu);
 		
+		quickHourDebugSubMenu = new JMenu(i18n.getString("menu.quickhour.item.debug"));
+		quickHourDebugSubMenu.setIcon(new ImageIcon(HourEditorWindow.class.getResource("/caceresenzo/assets/icons/code-48.png")));
+		quickHourMenu.add(quickHourDebugSubMenu);
+		
+		quickHourDebugDumpExcelFileMenuItem = new JMenuItem(i18n.getString("menu.quickhour.item.debug.subitem.dump-file"));
+		quickHourDebugDumpExcelFileMenuItem.setIcon(new ImageIcon(HourEditorWindow.class.getResource("/caceresenzo/assets/icons/paper-waste-48.png")));
+		quickHourDebugDumpExcelFileMenuItem.setActionCommand(ACTION_MENU_QUICKHOUR_DEBUG_DUMP);
+		quickHourDebugDumpExcelFileMenuItem.addActionListener(this);
+		quickHourDebugSubMenu.add(quickHourDebugDumpExcelFileMenuItem);
+		
 		quickHourQuitApplicationItemMenu = new JMenuItem(i18n.getString("menu.quickhour.item.quit"));
 		quickHourQuitApplicationItemMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_MASK));
 		quickHourQuitApplicationItemMenu.setIcon(new ImageIcon(HourEditorWindow.class.getResource("/caceresenzo/assets/icons/shutdown-48.png")));
@@ -255,7 +269,7 @@ public class HourEditorWindow implements ActionListener {
 		String command = event.getActionCommand();
 		
 		switch (command) {
-			
+			/* New / close */
 			case ACTION_MENU_FILE_NEW:
 			case ACTION_MENU_FILE_CLOSE: {
 				WorkHandler.closeWorksheet();
@@ -268,22 +282,38 @@ public class HourEditorWindow implements ActionListener {
 				break;
 			}
 			
+			/* Open */
 			case ACTION_MENU_FILE_OPEN: {
 				WorkHandler.openFile();
 				break;
 			}
 			
+			/* Save */
 			case ACTION_MENU_FILE_SAVE:
 			case ACTION_MENU_FILE_SAVEAS: {
 				WorkHandler.saveFile(command.equals(ACTION_MENU_FILE_SAVEAS));
 				break;
 			}
 			
+			/* Export */
 			case ACTION_MENU_FILE_EXPORT: {
 				WorkHandler.exportFile();
 				break;
 			}
 			
+			/* Debug */
+			case ACTION_MENU_QUICKHOUR_DEBUG_DUMP: {
+				DebugHandler.openDumpDialog();
+				break;
+			}
+			
+			/* Quit */
+			case ACTION_MENU_QUICKHOUR_QUIT: {
+				ClosingHandler.handleClose();
+				break;
+			}
+			
+			/* Button: New User */
 			case ACTION_USER_NEW: {
 				NewUserDialog newUserDialog = new NewUserDialog(new DialogCallback() {
 					@Override
@@ -303,11 +333,7 @@ public class HourEditorWindow implements ActionListener {
 				break;
 			}
 			
-			case ACTION_MENU_QUICKHOUR_QUIT: {
-				ClosingHandler.handleClose();
-				break;
-			}
-			
+			/* Button: New Hour */
 			case ACTION_HOUR_NEW:
 			case ACTION_HOUR_QUICK: {
 				lunchHourAdder(command.equals(ACTION_HOUR_QUICK));

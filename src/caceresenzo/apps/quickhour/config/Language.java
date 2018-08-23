@@ -51,9 +51,6 @@ public class Language {
 			
 			o("manager.quickhour.references-formats.default.display", "<DEFAUT>");
 			
-			o("menu.quickhour.title", "QuickHour");
-			o("menu.quickhour.item.quit", "Quitter l'application");
-			
 			o("menu.file.title", "Fichier");
 			o("menu.file.item.new", "Nouveau");
 			o("menu.file.item.open", "Ouvrir...");
@@ -61,6 +58,11 @@ public class Language {
 			o("menu.file.item.save-as", "Enregistrer sous...");
 			o("menu.file.item.export", "Exporter (Excel)...");
 			o("menu.file.item.close", "Fermer");
+			
+			o("menu.quickhour.title", "QuickHour");
+			o("menu.quickhour.item.quit", "Quitter l'application");
+			o("menu.quickhour.item.debug", "Débogage");
+			o("menu.quickhour.item.debug.subitem.dump-file", "Dumper un fichier");
 			
 			o("ui.dialog.x.button.ok", "Valider");
 			o("ui.dialog.x.button.cancel", "Annuler");
